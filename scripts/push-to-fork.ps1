@@ -63,8 +63,12 @@ if ($status) {
     throw "You have unsaved files. Run .\save-local.cmd first, then push."
 }
 
-$remotes = Invoke-Git -GitArgs @("-C", $root, "remote") -AllowFail
-$hasOrigin = $remotes -match "(^|\n)origin(\r)?$"
+$remoteNames = @(
+    (Invoke-Git -GitArgs @("-C", $root, "remote") -AllowFail) -split "\r?\n" |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { $_ }
+)
+$hasOrigin = $remoteNames -contains "origin"
 
 if (-not $hasOrigin) {
     if (-not $OriginUrl) {
