@@ -69,7 +69,7 @@ export function ModelsPage() {
   const selectedProvider = useWatch({ control: form.control, name: "provider" });
   const selectedCapability = useWatch({ control: form.control, name: "capability" });
   const bindingMode = useWatch({ control: form.control, name: "bindingMode" });
-  const selectedAccountIDs = useWatch({ control: form.control, name: "accountIds" });
+  const selectedAccountIDs = useWatch({ control: form.control, name: "accountIds" }) ?? [];
 
   const modelsQuery = useQuery({
     queryKey: ["models", "grouped", page, pageSize, debouncedSearch, statusFilter, providerFilter, sort.field, sort.order],
@@ -188,6 +188,20 @@ export function ModelsPage() {
   const visibleAccountOptions = normalizedAccountSearch
     ? accountOptions.filter((account) => account.name.toLocaleLowerCase().includes(normalizedAccountSearch) || account.id.includes(normalizedAccountSearch))
     : accountOptions;
+  const visibleAccountIDs = visibleAccountOptions.map((account) => account.id);
+  const selectedVisibleAccountCount = visibleAccountIDs.filter((id) => selectedAccountIDs.includes(id)).length;
+  const allVisibleAccountsSelected = visibleAccountIDs.length > 0 && selectedVisibleAccountCount === visibleAccountIDs.length;
+  const selectAllAccountsLabel = allVisibleAccountsSelected ? t("models.clearAllAccounts") : normalizedAccountSearch ? t("models.selectVisibleAccounts") : t("models.selectAllAccounts");
+
+  function toggleVisibleAccounts(checked: boolean): void {
+    const current = form.getValues("accountIds");
+    if (checked) {
+      form.setValue("accountIds", [...new Set([...current, ...visibleAccountIDs])], { shouldValidate: true });
+      return;
+    }
+    const visible = new Set(visibleAccountIDs);
+    form.setValue("accountIds", current.filter((id) => !visible.has(id)), { shouldValidate: true });
+  }
 
   const result = useMemo(() => modelsQuery.data ? { ...modelsQuery.data, items: modelsQuery.data.items.map((group) => newModelRouteGroup(group, t)) } : undefined, [modelsQuery.data, t]);
   const pageIDs = result?.items.flatMap((group) => group.routes.map((route) => route.id)) ?? [];
@@ -388,6 +402,13 @@ export function ModelsPage() {
                         {accountOptionsQuery.isPending ? <div className="flex min-h-20 items-center justify-center"><Spinner /></div> : null}
                         {accountOptionsQuery.isError ? <p className="p-3 text-center text-xs text-destructive">{accountOptionsQuery.error.message}</p> : null}
                         {!accountOptionsQuery.isPending && visibleAccountOptions.length === 0 ? <p className="p-3 text-center text-xs text-muted-foreground">{t("models.noBindableAccounts")}</p> : null}
+                        {visibleAccountOptions.length > 0 ? (
+                          <label htmlFor="model-account-select-all" className={cn("sticky top-0 z-10 flex h-8 cursor-pointer items-center gap-2.5 rounded-md bg-background/90 px-2 text-xs backdrop-blur-sm transition-colors hover:bg-accent/40", allVisibleAccountsSelected && "bg-accent/55")}>
+                            <Checkbox id="model-account-select-all" checked={allVisibleAccountsSelected ? true : selectedVisibleAccountCount > 0 ? "indeterminate" : false} onCheckedChange={(value) => toggleVisibleAccounts(value === true)} aria-label={selectAllAccountsLabel} />
+                            <span className="min-w-0 flex-1 truncate">{selectAllAccountsLabel}</span>
+                            <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{selectedVisibleAccountCount}/{visibleAccountOptions.length}</span>
+                          </label>
+                        ) : null}
                         {visibleAccountOptions.map((account) => {
                           const controlId = `model-account-${account.id}`;
                           const checked = selectedAccountIDs.includes(account.id);

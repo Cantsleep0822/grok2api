@@ -2108,6 +2108,9 @@ Object.assign(resources["zh-CN"].translation.models as unknown as Record<string,
   editCapability: "编辑 {{capability}}",
   deleteGroupDescription: "这将删除 {{name}} 的全部 {{count}} 项接口能力及其客户端密钥权限。后续目录同步可能重新创建仍受上游支持的能力。",
   bindAccountsDescription: "开启后仅通过指定账号路由；关闭后由对应 Provider 的可用账号池自动调度。Console 内置模型无需逐账号硬绑定。",
+  selectAllAccounts: "全选账号",
+  selectVisibleAccounts: "全选当前搜索结果",
+  clearAllAccounts: "取消全选",
 });
 Object.assign(resources.en.translation.models as unknown as Record<string, string>, {
   capability: "Endpoint capability",
@@ -2127,6 +2130,9 @@ Object.assign(resources.en.translation.models as unknown as Record<string, strin
   editCapability: "Edit {{capability}}",
   deleteGroupDescription: "This removes all {{count}} endpoint capabilities for {{name}} and their client-key permissions. A later catalog sync may recreate capabilities that the upstream still supports.",
   bindAccountsDescription: "When enabled, route only through the selected accounts. Otherwise, schedule from the provider's eligible account pool automatically. Built-in Console models do not require per-account bindings.",
+  selectAllAccounts: "Select all accounts",
+  selectVisibleAccounts: "Select all matching accounts",
+  clearAllAccounts: "Clear selection",
 });
 
 // Kept separate from the legacy one-line settings resources so proxy

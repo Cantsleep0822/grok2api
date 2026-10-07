@@ -1,0 +1,1826 @@
+﻿diff --git a/.gitignore b/.gitignore
+index cf5fc5b4..51e3769b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -50,3 +50,6 @@ __pycache__/
+ /.tmp/
+ /tmp/
+ /Dockerfile.local
++
++# Local fork merge backups (keep patches/ tracked)
++.local-fork/backups/
+diff --git a/FORK.md b/FORK.md
+new file mode 100644
+index 00000000..025d3cb3
+--- /dev/null
++++ b/FORK.md
+@@ -0,0 +1,88 @@
++# 浜屽紑璇存槑锛堢粰灏忕櫧锛?+
++杩欎釜鐩綍鏄綘鑷繁鐨?grok2api 浜屽紑鐗堟湰銆傜洰鏍囧彧鏈変袱浠朵簨锛?+
++1. 浣犳敼杩囩殑鍔熻兘锛堜緥濡傛ā鍨嬭矾鐢便€屽叏閫夎处鍙枫€嶏級涓€鐩寸暀鐫€銆?+2. 鍘熶綔鑰?[chenyme/grok2api](https://github.com/chenyme/grok2api) 鍙戝竷鏂扮増鏈椂锛屼綘杩樿兘缁х画鏀舵洿鏂般€?+
++涓嶉渶瑕佺粰鍘熶綔鑰呮彁 PR銆?+
++## 鏃ュ父鎬庝箞鐢?+
++浠ュ悗鍘熶綔鑰呮湁鏇存柊锛屽湪椤圭洰鏍圭洰褰曟墽琛岋細
++
++```powershell
++.\sync-upstream.cmd
++```
++
++鑴氭湰浼氾細
++
++1. 浠?GitHub 鎷夊彇鍘熶綔鑰呮渶鏂颁唬鐮?+2. 鑷姩澶囦唤浣犲綋鍓嶇殑鏈湴淇敼
++3. 鎶婂師浣滆€呮洿鏂板悎骞惰繘鏉?+4. 灏介噺淇濅綇浣犲凡缁忔敼杩囩殑鏂囦欢
++
++鍚堝苟鎴愬姛鍚庯紝閲嶆柊鏋勫缓鍐嶅惎鍔細
++
++```powershell
++docker compose up -d --build
++```
++
++濡傛灉浣犳槸鐢ㄦ簮鐮佸惎鍔紙`make run` 鎴栫洿鎺ヨ窇鍚庣锛夛紝鍏堥噸鏂版瀯寤哄墠绔細
++
++```powershell
++cd frontend
++pnpm install
++pnpm build
++```
++
++## 绗竴娆★紙宸茬粡甯綘鍋氳繃鐨勮瘽鍙烦杩囷級
++
++濡傛灉鎻愮ず杩樻病鍒濆鍖栵紝鎵ц涓€娆★細
++
++```powershell
++.\sync-upstream.cmd -Init
++```
++
++杩欎竴姝ヤ細锛?+
++- 鎶婂綋鍓嶇洰褰曞彉鎴?git 浠撳簱
++- 杩炴帴鍘熶綔鑰呬粨搴擄紝鍦板潃鏄?`https://github.com/chenyme/grok2api.git`锛堣繙绋嬪悕 `upstream`锛?+- 鎶婁綘鐜板湪鐨勬枃浠舵帴鍒板師浣滆€呯殑鍘嗗彶鍚庨潰锛屾柟渚夸互鍚庡悎骞?+
++濡傛灉 GitHub 鎵撲笉寮€锛屾湰鍦板揩鐓т粛浼氫繚瀛樸€傜綉缁滄仮澶嶅悗鍐嶈繍琛屼竴娆?`-Init`銆備篃鍙互鎹㈡垚闀滃儚锛?+
++```powershell
++.\sync-upstream.cmd -Init -UpstreamUrl https://gitclone.com/github.com/chenyme/grok2api.git
++```
++
++## 鍚堝苟鏃跺嚭鐜板啿绐佹€庝箞鍔?+
++鍋跺皵鍘熶綔鑰呬篃鏀逛簡浣犳敼杩囩殑鍚屼竴涓枃浠讹紝鑴氭湰浼氬仠涓嬫潵骞跺垪鍑哄啿绐佹枃浠躲€傛寜涓嬮潰鍋氾細
++
++1. 鐢ㄧ紪杈戝櫒鎵撳紑鍒楀嚭鐨勬枃浠?+2. 鎼滅储 `<<<<<<<`
++3. 鎶娿€屼綘鐨勬敼鍔ㄣ€嶅拰銆屽師浣滆€呯殑鏂颁唬鐮併€嶉兘鐣欎笅锛屽垹鎺?`<<<<<<<`銆乣=======`銆乣>>>>>>>` 杩欎簺鏍囪
++4. 淇濆瓨鍚庢墽琛岋細
++
++```powershell
++git add .
++git commit -m "local: resolve upstream merge"
++```
++
++鎷夸笉鍑嗘椂锛屽厛鎵撳紑 `.local-fork/backups/` 閲屾渶鏂扮殑澶囦唤琛ヤ竵锛岄偅閲屾槸鍚堝苟鍓嶄綘鐨勫畬鏁存湰鍦版敼鍔ㄣ€?+
++## 甯哥敤鍛戒护
++
++```powershell
++.\sync-upstream.cmd -Status      # 鐪嬬湅钀藉悗鍘熶綔鑰呭灏?+.\sync-upstream.cmd -SavePatch   # 鎶婂綋鍓嶆湰鍦版敼鍔ㄥ鍑烘垚琛ヤ竵
++.\sync-upstream.cmd -DryRun      # 鍙鏌ワ紝涓嶇湡姝ｅ悎骞?+.\sync-upstream.cmd -Init -UpstreamUrl https://gitclone.com/github.com/chenyme/grok2api.git
++```
++
++## 涓嶈鍋氱殑浜?+
++- 涓嶈鐩存帴 `docker compose pull` 鍚庝娇鐢?`ghcr.io/chenyme/grok2api:latest`锛岄偅鏄師浣滆€呴暅鍍忥紝涓嶅寘鍚綘鐨勪簩寮€銆?+- 涓嶈鍒?`.git` 鐩綍锛屽惁鍒欎互鍚庡緢闅惧啀骞插噣鍦版敹鏇存柊銆?+- 涓嶈鍦ㄥ悎骞跺仛鍒颁竴鍗婃椂鍏虫帀绐楀彛銆?diff --git a/README.md b/README.md
+index 8ca37bfa..b0c873d7 100644
+--- a/README.md
++++ b/README.md
+@@ -54,10 +54,6 @@
+ <td width="200" align="center" valign="middle"><a href="https://www.swiftproxy.net/?ref=grok2api"><img src="frontend/public/sponner/swift-proxy.png" alt="Swiftproxy" width="180"></a></td>
+ <td valign="middle">Swiftproxy provides 90M+ clean residential IPs across 220+ locations, supporting HTTP(S)/SOCKS5, IP rotation, Sticky Sessions, and precise location targeting. It helps API services and automation workflows access online platforms reliably from different locations, making it suitable for API requests, automation, data collection, and location-based access. Residential proxies start at $0.7/GB. Free testing is available, and code PROXY90 gives 10% off. <a href="https://www.swiftproxy.net/?ref=grok2api">Try Swiftproxy now</a>.</td>
+ </tr>
+-<tr>
+-<td width="200" align="center" valign="middle"><a href="https://www.rapidproxy.io/?ref=grok2api"><img src="frontend/public/sponner/rapid-proxy.jpg" alt="RapidProxy" width="180"></a></td>
+-<td valign="middle">RapidProxy is a data collection proxy solution built for developers, providing stable and reliable residential proxy services. With 90M+ global residential IPs and 200+ country coverage, intelligent rotation, and precise geo-targeting, it helps projects such as web scraping, AI data training, SEO monitoring, and e-commerce data analysis break through access restrictions and improve data collection efficiency. It supports mainstream automation frameworks such as Playwright, Selenium, and Puppeteer, with prices as low as $0.65/GB 鈥?<a href="https://www.rapidproxy.io/?ref=grok2api">start your free test now</a>.</td>
+-</tr>
+ </table>
+ 
+ <br>
+diff --git a/README.zh-CN.md b/README.zh-CN.md
+index 0d08279d..583c2e3c 100644
+--- a/README.zh-CN.md
++++ b/README.zh-CN.md
+@@ -51,10 +51,6 @@
+ <td width="200" align="center" valign="middle"><a href="https://www.swiftproxy.net/?ref=grok2api"><img src="frontend/public/sponner/swift-proxy.png" alt="Swiftproxy" width="180"></a></td>
+ <td valign="middle">Swiftproxy 鎻愪緵 9000 涓? 绾噣浣忓畢 IP锛岃鐩栧叏鐞?220+ 涓浗瀹跺拰鍦板尯锛屾敮鎸?HTTP(S)/SOCKS5銆両P 杞崲銆丼ticky Session 鍙婄簿鍑嗗湴鍩熷畾浣嶏紝涓?API 鏈嶅姟鍜岃嚜鍔ㄥ寲宸ヤ綔娴佹彁渚涚ǔ瀹氱殑鍏ㄧ悆缃戠粶璁块棶锛岄€傜敤浜?API 璇锋眰銆佽嚜鍔ㄥ寲銆佹暟鎹噰闆嗗強鍦板煙璁块棶绛夊満鏅€備綇瀹呬唬鐞嗕綆鑷?$0.7/GB锛屾敮鎸佸厤璐规祴璇曪紝浣跨敤浼樻儬鐮?PROXY90 鍙韩 9 鎶樹紭鎯犮€?a href="https://www.swiftproxy.net/?ref=grok2api">绔嬪嵆浣撻獙 Swiftproxy</a>銆?/td>
+ </tr>
+-<tr>
+-<td width="200" align="center" valign="middle"><a href="https://www.rapidproxy.io/?ref=grok2api"><img src="frontend/public/sponner/rapid-proxy.jpg" alt="RapidProxy" width="180"></a></td>
+-<td valign="middle">RapidProxy 鏄潰鍚戝紑鍙戣€呯殑鏁版嵁閲囬泦浠ｇ悊鏂规锛屾彁渚涚ǔ瀹氬彲闈犵殑浣忓畢浠ｇ悊鏈嶅姟銆傛嫢鏈?9000 涓? 鍏ㄧ悆浣忓畢 IP锛岃鐩?200+ 涓浗瀹跺拰鍦板尯锛屾敮鎸佹櫤鑳借疆鎹笌绮惧噯鍦板煙瀹氫綅锛屽府鍔╃綉椤垫姄鍙栥€丄I 鏁版嵁璁粌銆丼EO 鐩戞帶銆佺數鍟嗘暟鎹垎鏋愮瓑椤圭洰绐佺牬璁块棶闄愬埗銆佹彁鍗囬噰闆嗘晥鐜囥€傛敮鎸?Playwright銆丼elenium銆丳uppeteer 绛変富娴佽嚜鍔ㄥ寲妗嗘灦锛屼环鏍间綆鑷?$0.65/GB锛?a href="https://www.rapidproxy.io/?ref=grok2api">绔嬪嵆鍏嶈垂娴嬭瘯</a>銆?/td>
+-</tr>
+ </table>
+ 
+ <br>
+diff --git a/backend/internal/domain/audit/pricing.go b/backend/internal/domain/audit/pricing.go
+index 5e9d15f8..eab3cfcc 100644
+--- a/backend/internal/domain/audit/pricing.go
++++ b/backend/internal/domain/audit/pricing.go
+@@ -116,7 +116,6 @@ type tokenPriceRule struct {
+ 
+ var officialTokenPriceRules = []tokenPriceRule{
+ 	{Pattern: regexp.MustCompile(`^grok-(?:build-0\.1|code-fast(?:-1)?|composer-2\.5-fast)(?:-[a-z0-9.]+)*$`), CanonicalModel: "grok-build-0.1"},
+-	{Pattern: regexp.MustCompile(`^grok-4\.7(?:-[a-z0-9.]+)*$`), CanonicalModel: "grok-4.7"},
+ 	{Pattern: regexp.MustCompile(`^grok-4\.6(?:-[a-z0-9.]+)*$`), CanonicalModel: "grok-4.6"},
+ 	{Pattern: regexp.MustCompile(`^grok-4\.5(?:-[a-z0-9.]+)*$`), CanonicalModel: "grok-4.5"},
+ 	{Pattern: regexp.MustCompile(`^grok-4\.3(?:-[a-z0-9.]+)*$`), CanonicalModel: "grok-4.3"},
+@@ -137,10 +136,6 @@ func buildOfficialTokenPrices() map[string]tokenPrice {
+ 	}
+ 	register("grok-build-0.1", tokenPrice{InputTicks: 10000, CachedInputTicks: 2000, OutputTicks: 20000, LongContextTokens: 200000, LongInputTicks: 20000, LongCachedTicks: 4000, LongOutputTicks: 40000},
+ 		"grok-code-fast-1", "grok-code-fast", "grok-code-fast-1-0825", "grok-composer-2.5-fast")
+-	// grok-4.7 has not been published on the xAI pricing page yet; it is billed
+-	// at the grok-4.6 frontier rate until an official rate is available.
+-	register("grok-4.7", tokenPrice{InputTicks: 20000, CachedInputTicks: 5000, OutputTicks: 60000, LongContextTokens: 200000, LongInputTicks: 40000, LongCachedTicks: 10000, LongOutputTicks: 120000},
+-		"grok-4.7-latest")
+ 	register("grok-4.6", tokenPrice{InputTicks: 20000, CachedInputTicks: 5000, OutputTicks: 60000, LongContextTokens: 200000, LongInputTicks: 40000, LongCachedTicks: 10000, LongOutputTicks: 120000},
+ 		"grok-4.6-latest")
+ 	register("grok-4.5", tokenPrice{InputTicks: 20000, CachedInputTicks: 3000, OutputTicks: 60000, LongContextTokens: 200000, LongInputTicks: 40000, LongCachedTicks: 6000, LongOutputTicks: 120000},
+diff --git a/backend/internal/domain/audit/pricing_test.go b/backend/internal/domain/audit/pricing_test.go
+index 712881e8..9706f346 100644
+--- a/backend/internal/domain/audit/pricing_test.go
++++ b/backend/internal/domain/audit/pricing_test.go
+@@ -28,7 +28,6 @@ func TestEstimateOfficialCostMatchesControlledModelFamilies(t *testing.T) {
+ 	}{
+ 		{model: "Build/grok-build-0.1", canonical: "grok-build-0.1"},
+ 		{model: "Console/grok-4.6-latest", canonical: "grok-4.6"},
+-		{model: "Build/grok-4.7-xhigh", canonical: "grok-4.7"},
+ 		{model: "grok_build/grok-code-fast-1-0825", canonical: "grok-build-0.1"},
+ 		{model: "Console/grok-4.3-high", canonical: "grok-4.3"},
+ 		{model: "Web/grok-4.5-2026-07-14", canonical: "grok-4.5"},
+diff --git a/backend/internal/domain/audit/reasoning_effort.go b/backend/internal/domain/audit/reasoning_effort.go
+index 22e4bd88..7e02ffb2 100644
+--- a/backend/internal/domain/audit/reasoning_effort.go
++++ b/backend/internal/domain/audit/reasoning_effort.go
+@@ -6,7 +6,7 @@ import "strings"
+ // Provider adapters must resolve client aliases before calling this function.
+ func NormalizeReasoningEffort(value string) string {
+ 	switch normalized := strings.ToLower(strings.TrimSpace(value)); normalized {
+-	case "auto", "none", "minimal", "low", "medium", "high", "xhigh", "max", "fixed":
++	case "auto", "none", "low", "medium", "high", "xhigh", "fixed":
+ 		return normalized
+ 	default:
+ 		return ""
+diff --git a/backend/internal/domain/audit/reasoning_effort_test.go b/backend/internal/domain/audit/reasoning_effort_test.go
+index 7fe4fc72..4b8f9f2f 100644
+--- a/backend/internal/domain/audit/reasoning_effort_test.go
++++ b/backend/internal/domain/audit/reasoning_effort_test.go
+@@ -9,10 +9,7 @@ func TestNormalizeReasoningEffort(t *testing.T) {
+ 	}{
+ 		{value: " XHIGH ", want: "xhigh"},
+ 		{value: "fixed", want: "fixed"},
+-		// max/minimal are real grok-build wire tiers; adapters only forward them when the model menu lists them.
+-		{value: "max", want: "max"},
+-		{value: "MINIMAL", want: "minimal"},
+-		{value: "ultra", want: ""},
++		{value: "max", want: ""},
+ 		{value: "thinking:32000", want: ""},
+ 		{value: "customer@example.com", want: ""},
+ 	}
+diff --git a/backend/internal/domain/model/reasoning.go b/backend/internal/domain/model/reasoning.go
+index f7ff9ffe..8caeb974 100644
+--- a/backend/internal/domain/model/reasoning.go
++++ b/backend/internal/domain/model/reasoning.go
+@@ -11,13 +11,12 @@ import (
+ type ReasoningEffort = string
+ 
+ const (
+-	ReasoningEffortNone    ReasoningEffort = "none"
+-	ReasoningEffortMinimal ReasoningEffort = "minimal"
+-	ReasoningEffortLow     ReasoningEffort = "low"
+-	ReasoningEffortMedium  ReasoningEffort = "medium"
+-	ReasoningEffortHigh    ReasoningEffort = "high"
+-	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+-	ReasoningEffortMax     ReasoningEffort = "max"
++	ReasoningEffortNone   ReasoningEffort = "none"
++	ReasoningEffortLow    ReasoningEffort = "low"
++	ReasoningEffortMedium ReasoningEffort = "medium"
++	ReasoningEffortHigh   ReasoningEffort = "high"
++	ReasoningEffortXHigh  ReasoningEffort = "xhigh"
++	ReasoningEffortMax    ReasoningEffort = "max"
+ )
+ 
+ const GrokComposer25Fast = "grok-composer-2.5-fast"
+@@ -26,7 +25,6 @@ const grokComposerModelPrefix = "grok-composer-"
+ 
+ // reasoningEffortSuffixes is ordered longest-first so "xhigh" wins over "high".
+ var reasoningEffortSuffixes = []string{
+-	ReasoningEffortMinimal,
+ 	ReasoningEffortXHigh,
+ 	ReasoningEffortMedium,
+ 	ReasoningEffortHigh,
+@@ -35,35 +33,18 @@ var reasoningEffortSuffixes = []string{
+ 	ReasoningEffortMax,
+ }
+ 
+-// knownReasoningEfforts is the full grok-build wire vocabulary
+-// (xai-grok-sampling-types ReasoningEffort). Upstream catalog menus are
+-// filtered against it so a tier this gateway cannot name is never advertised.
+-var knownReasoningEfforts = map[string]struct{}{
+-	ReasoningEffortNone: {}, ReasoningEffortMinimal: {}, ReasoningEffortLow: {}, ReasoningEffortMedium: {},
+-	ReasoningEffortHigh: {}, ReasoningEffortXHigh: {}, ReasoningEffortMax: {},
+-}
+-
+-// IsKnownReasoningEffort reports whether value is a grok-build wire effort tier.
+-func IsKnownReasoningEffort(value string) bool {
+-	_, ok := knownReasoningEfforts[strings.ToLower(strings.TrimSpace(value))]
+-	return ok
+-}
+-
+ // grokReasoningCapabilities maps external public model IDs to the reasoning levels
+ // generally accepted by the model family. Provider-specific wire restrictions are
+ // applied by providerReasoningEffortOverrides:
+ //   - grok-4.5: low/medium/high (reasoning cannot be disabled; no xhigh/max)
+-//   - grok-4.6 / grok-4.7: low/medium/high/xhigh (xhigh is a real upstream effort; max stays guarded)
++//   - grok-4.6: low/medium/high/xhigh (xhigh is a real upstream effort; max stays guarded)
+ //   - grok-4.3: none/low/medium/high
+ //   - grok-4.20-multi-agent: low/medium/high/xhigh (effort controls agent count)
+ //
+ // Unknown models default to none-only and never expand into effort aliases.
+-// When the Build catalog advertises a reasoning menu for a model (see
+-// RegisterUpstreamModelProfile), that live menu takes precedence over this table.
+ var grokReasoningCapabilities = map[string][]string{
+ 	"grok-4.5":                     {ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh},
+ 	"grok-4.6":                     {ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh},
+-	"grok-4.7":                     {ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh},
+ 	"grok-4.3":                     {ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh},
+ 	"grok-build-0.1":               {ReasoningEffortNone},
+ 	"grok-4.20-0309-reasoning":     {ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh},
+@@ -185,7 +166,16 @@ func DefaultReasoningEffort(publicModel string) string {
+ 	if _, effort, ok := ParseReasoningModelAlias(publicModel); ok {
+ 		return effort
+ 	}
+-	return preferredReasoningEffort(externalModelSlug(publicModel), SupportedReasoningEfforts(publicModel))
++	levels := SupportedReasoningEfforts(publicModel)
++	for _, level := range levels {
++		if level == ReasoningEffortMedium {
++			return level
++		}
++	}
++	if len(levels) > 0 {
++		return levels[0]
++	}
++	return ReasoningEffortNone
+ }
+ 
+ // DefaultReasoningEffortForProvider returns a configurable Provider default.
+@@ -194,25 +184,7 @@ func DefaultReasoningEffortForProvider(providerValue account.Provider, publicMod
+ 	if _, effort, ok := ParseReasoningModelAlias(publicModel); ok && SupportsReasoningEffortForProvider(providerValue, publicModel, effort) {
+ 		return effort
+ 	}
+-	return preferredReasoningEffort(externalModelSlug(publicModel), SupportedReasoningEffortsForProvider(providerValue, publicModel))
+-}
+-
+-func reasoningEffortsForSlug(slug string) []string {
+-	if profile, ok := UpstreamProfile(slug); ok && len(profile.ReasoningEfforts) > 0 {
+-		return append([]string(nil), profile.ReasoningEfforts...)
+-	}
+-	if levels, ok := grokReasoningCapabilities[slug]; ok {
+-		return append([]string(nil), levels...)
+-	}
+-	return []string{ReasoningEffortNone}
+-}
+-
+-// preferredReasoningEffort picks the default among levels: the catalog-declared
+-// default when the live menu provides one, otherwise medium, otherwise the first level.
+-func preferredReasoningEffort(slug string, levels []string) string {
+-	if profile, ok := UpstreamProfile(slug); ok && profile.DefaultReasoningEffort != "" && levelsContain(levels, profile.DefaultReasoningEffort) {
+-		return profile.DefaultReasoningEffort
+-	}
++	levels := SupportedReasoningEffortsForProvider(providerValue, publicModel)
+ 	for _, level := range levels {
+ 		if level == ReasoningEffortMedium {
+ 			return level
+@@ -224,6 +196,13 @@ func preferredReasoningEffort(slug string, levels []string) string {
+ 	return ReasoningEffortNone
+ }
+ 
++func reasoningEffortsForSlug(slug string) []string {
++	if levels, ok := grokReasoningCapabilities[slug]; ok {
++		return append([]string(nil), levels...)
++	}
++	return []string{ReasoningEffortNone}
++}
++
+ // ReasoningAliasPublicIDs returns effort-suffixed aliases for a base public model ID.
+ // Models with fewer than two controllable levels produce no aliases (base name is enough).
+ // Only levels the model truly supports are included 鈥?never a blanket none/low/medium/high/xhigh/max template.
+diff --git a/backend/internal/domain/model/upstream_profile.go b/backend/internal/domain/model/upstream_profile.go
+deleted file mode 100644
+index 2d03c30a..00000000
+--- a/backend/internal/domain/model/upstream_profile.go
++++ /dev/null
+@@ -1,119 +0,0 @@
+-package model
+-
+-import (
+-	"sort"
+-	"strings"
+-	"sync"
+-)
+-
+-// UpstreamModelProfile carries the per-model metadata the Grok Build
+-// /v1/models catalog advertises. grok-build (xai-grok-shell remote/client.rs)
+-// drives its reasoning-effort menu, default effort, and context budget from
+-// exactly these fields instead of a compiled-in table, so the gateway mirrors
+-// the same source of truth once an account has synchronized its catalog.
+-type UpstreamModelProfile struct {
+-	// ReasoningEfforts is the ordered menu from `reasoning_efforts[].value`,
+-	// filtered to the grok-build wire vocabulary. Empty means the catalog did
+-	// not publish a menu and static capabilities apply.
+-	ReasoningEfforts []string
+-	// DefaultReasoningEffort is the menu entry flagged `default: true`, or the
+-	// top-level `reasoning_effort` when the menu carries no flag.
+-	DefaultReasoningEffort string
+-	// SupportsReasoningEffort mirrors `supports_reasoning_effort`.
+-	SupportsReasoningEffort bool
+-	// ContextWindow mirrors `context_window` (tokens); zero when absent.
+-	ContextWindow int
+-	// MaxCompletionTokens mirrors `max_completion_tokens`; zero when absent.
+-	MaxCompletionTokens int
+-	// SupportsBackendSearch mirrors `supports_backend_search`.
+-	SupportsBackendSearch bool
+-}
+-
+-var (
+-	upstreamProfilesMu sync.RWMutex
+-	upstreamProfiles   = map[string]UpstreamModelProfile{}
+-)
+-
+-// NormalizeUpstreamProfile validates and canonicalizes a catalog profile:
+-// effort values are lower-cased, de-duplicated, restricted to known tiers,
+-// and the default is dropped when the menu does not contain it.
+-func NormalizeUpstreamProfile(profile UpstreamModelProfile) UpstreamModelProfile {
+-	efforts := make([]string, 0, len(profile.ReasoningEfforts))
+-	seen := make(map[string]struct{}, len(profile.ReasoningEfforts))
+-	for _, raw := range profile.ReasoningEfforts {
+-		value := strings.ToLower(strings.TrimSpace(raw))
+-		if !IsKnownReasoningEffort(value) {
+-			continue
+-		}
+-		if _, exists := seen[value]; exists {
+-			continue
+-		}
+-		seen[value] = struct{}{}
+-		efforts = append(efforts, value)
+-	}
+-	profile.ReasoningEfforts = efforts
+-	profile.DefaultReasoningEffort = strings.ToLower(strings.TrimSpace(profile.DefaultReasoningEffort))
+-	if _, exists := seen[profile.DefaultReasoningEffort]; !exists {
+-		profile.DefaultReasoningEffort = ""
+-	}
+-	if len(efforts) > 0 {
+-		profile.SupportsReasoningEffort = true
+-	}
+-	if profile.ContextWindow < 0 {
+-		profile.ContextWindow = 0
+-	}
+-	if profile.MaxCompletionTokens < 0 {
+-		profile.MaxCompletionTokens = 0
+-	}
+-	return profile
+-}
+-
+-// RegisterUpstreamModelProfile stores the catalog profile for an upstream model
+-// slug (without provider prefix). Later registrations replace earlier ones so a
+-// catalog refresh always wins.
+-func RegisterUpstreamModelProfile(upstreamModel string, profile UpstreamModelProfile) {
+-	slug := strings.ToLower(externalModelSlug(upstreamModel))
+-	if slug == "" {
+-		return
+-	}
+-	normalized := NormalizeUpstreamProfile(profile)
+-	upstreamProfilesMu.Lock()
+-	upstreamProfiles[slug] = normalized
+-	upstreamProfilesMu.Unlock()
+-}
+-
+-// UpstreamProfile returns the registered catalog profile for a model slug.
+-func UpstreamProfile(upstreamModel string) (UpstreamModelProfile, bool) {
+-	slug := strings.ToLower(externalModelSlug(upstreamModel))
+-	if slug == "" {
+-		return UpstreamModelProfile{}, false
+-	}
+-	upstreamProfilesMu.RLock()
+-	profile, ok := upstreamProfiles[slug]
+-	upstreamProfilesMu.RUnlock()
+-	if !ok {
+-		return UpstreamModelProfile{}, false
+-	}
+-	profile.ReasoningEfforts = append([]string(nil), profile.ReasoningEfforts...)
+-	return profile, true
+-}
+-
+-// UpstreamProfileSlugs lists registered slugs in stable order (for admin/debug views).
+-func UpstreamProfileSlugs() []string {
+-	upstreamProfilesMu.RLock()
+-	slugs := make([]string, 0, len(upstreamProfiles))
+-	for slug := range upstreamProfiles {
+-		slugs = append(slugs, slug)
+-	}
+-	upstreamProfilesMu.RUnlock()
+-	sort.Strings(slugs)
+-	return slugs
+-}
+-
+-// ResetUpstreamProfiles clears every registered profile. Tests use it to
+-// isolate catalog state between cases.
+-func ResetUpstreamProfiles() {
+-	upstreamProfilesMu.Lock()
+-	upstreamProfiles = map[string]UpstreamModelProfile{}
+-	upstreamProfilesMu.Unlock()
+-}
+diff --git a/backend/internal/domain/model/upstream_profile_test.go b/backend/internal/domain/model/upstream_profile_test.go
+deleted file mode 100644
+index 39eb22b0..00000000
+--- a/backend/internal/domain/model/upstream_profile_test.go
++++ /dev/null
+@@ -1,94 +0,0 @@
+-package model
+-
+-import (
+-	"reflect"
+-	"testing"
+-
+-	"github.com/chenyme/grok2api/backend/internal/domain/account"
+-)
+-
+-func TestUpstreamProfileOverridesStaticReasoningTable(t *testing.T) {
+-	ResetUpstreamProfiles()
+-	t.Cleanup(ResetUpstreamProfiles)
+-
+-	// Unknown model: none-only until the catalog says otherwise.
+-	if got := SupportedReasoningEfforts("grok-9.9"); !reflect.DeepEqual(got, []string{ReasoningEffortNone}) {
+-		t.Fatalf("unknown model efforts = %v", got)
+-	}
+-	RegisterUpstreamModelProfile("grok-9.9", UpstreamModelProfile{
+-		ReasoningEfforts:       []string{"XHigh", "high", "medium", "low", "high", "bogus"},
+-		DefaultReasoningEffort: "high",
+-		ContextWindow:          500000,
+-	})
+-	want := []string{ReasoningEffortXHigh, ReasoningEffortHigh, ReasoningEffortMedium, ReasoningEffortLow}
+-	if got := SupportedReasoningEfforts("grok-9.9"); !reflect.DeepEqual(got, want) {
+-		t.Fatalf("catalog efforts = %v, want %v", got, want)
+-	}
+-	if got := SupportedReasoningEfforts("Build/grok-9.9"); !reflect.DeepEqual(got, want) {
+-		t.Fatalf("prefixed catalog efforts = %v", got)
+-	}
+-	if !SupportsReasoningEffort("grok-9.9", "xhigh") || SupportsReasoningEffort("grok-9.9", "max") {
+-		t.Fatal("menu membership must drive SupportsReasoningEffort")
+-	}
+-	// Catalog default wins over the static medium preference.
+-	if got := DefaultReasoningEffort("grok-9.9"); got != ReasoningEffortHigh {
+-		t.Fatalf("default = %q", got)
+-	}
+-	if got := DefaultReasoningEffortForProvider(account.ProviderBuild, "grok-9.9"); got != ReasoningEffortHigh {
+-		t.Fatalf("provider default = %q", got)
+-	}
+-	// Aliases follow the live menu.
+-	if base, effort, ok := ParseReasoningModelAlias("grok-9.9-xhigh"); !ok || base != "grok-9.9" || effort != ReasoningEffortXHigh {
+-		t.Fatalf("alias parse = %q %q %v", base, effort, ok)
+-	}
+-	if got := ReasoningAliasPublicIDs("grok-9.9"); !reflect.DeepEqual(got, []string{"grok-9.9-xhigh", "grok-9.9-high", "grok-9.9-medium", "grok-9.9-low"}) {
+-		t.Fatalf("aliases = %v", got)
+-	}
+-	profile, ok := UpstreamProfile("Build/grok-9.9")
+-	if !ok || profile.ContextWindow != 500000 || !profile.SupportsReasoningEffort || profile.DefaultReasoningEffort != "high" {
+-		t.Fatalf("profile = %#v ok=%v", profile, ok)
+-	}
+-}
+-
+-func TestUpstreamProfileWithoutMenuKeepsStaticTable(t *testing.T) {
+-	ResetUpstreamProfiles()
+-	t.Cleanup(ResetUpstreamProfiles)
+-	RegisterUpstreamModelProfile("grok-4.5", UpstreamModelProfile{ContextWindow: 256000})
+-	want := []string{ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh}
+-	if got := SupportedReasoningEfforts("grok-4.5"); !reflect.DeepEqual(got, want) {
+-		t.Fatalf("efforts = %v", got)
+-	}
+-	if got := DefaultReasoningEffort("grok-4.5"); got != ReasoningEffortMedium {
+-		t.Fatalf("default = %q", got)
+-	}
+-}
+-
+-func TestUpstreamProfileDefaultDroppedWhenNotInMenu(t *testing.T) {
+-	profile := NormalizeUpstreamProfile(UpstreamModelProfile{ReasoningEfforts: []string{"low", "high"}, DefaultReasoningEffort: "xhigh"})
+-	if profile.DefaultReasoningEffort != "" {
+-		t.Fatalf("default = %q", profile.DefaultReasoningEffort)
+-	}
+-}
+-
+-func TestMinimalIsAKnownTierAndAliasSuffix(t *testing.T) {
+-	ResetUpstreamProfiles()
+-	t.Cleanup(ResetUpstreamProfiles)
+-	if !IsKnownReasoningEffort("minimal") || !IsKnownReasoningEffort("MAX") || IsKnownReasoningEffort("ultra") {
+-		t.Fatal("known tier vocabulary drifted from grok-build")
+-	}
+-	RegisterUpstreamModelProfile("grok-9.8", UpstreamModelProfile{ReasoningEfforts: []string{"minimal", "low", "max"}})
+-	if base, effort, ok := ParseReasoningModelAlias("grok-9.8-minimal"); !ok || base != "grok-9.8" || effort != ReasoningEffortMinimal {
+-		t.Fatalf("alias = %q %q %v", base, effort, ok)
+-	}
+-	if base, effort, ok := ParseReasoningModelAlias("grok-9.8-max"); !ok || base != "grok-9.8" || effort != ReasoningEffortMax {
+-		t.Fatalf("alias = %q %q %v", base, effort, ok)
+-	}
+-}
+-
+-func TestGrok47StaticCapabilities(t *testing.T) {
+-	ResetUpstreamProfiles()
+-	want := []string{ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh}
+-	if got := SupportedReasoningEfforts("grok-4.7"); !reflect.DeepEqual(got, want) {
+-		t.Fatalf("grok-4.7 efforts = %v", got)
+-	}
+-}
+diff --git a/backend/internal/infra/config/config.go b/backend/internal/infra/config/config.go
+index edf9dc9f..1c0db402 100644
+--- a/backend/internal/infra/config/config.go
++++ b/backend/internal/infra/config/config.go
+@@ -29,7 +29,7 @@ const (
+ 	ClearanceModeOnDemand         = "on_demand"
+ 	DefaultStatsigSignerURL       = "https://grok.wodf.de/sign"
+ 	DefaultFlareSolverrURL        = "http://flaresolverr:8191"
+-	RecommendedBuildClientVersion = "1.0.40"
++	RecommendedBuildClientVersion = "1.0.4"
+ 	RecommendedBuildUserAgent     = "grok-shell/" + RecommendedBuildClientVersion + " (linux; x86_64)"
+ 
+ 	maxServerBodyBytes     = 256 << 20
+diff --git a/backend/internal/infra/config/config_test.go b/backend/internal/infra/config/config_test.go
+index cd2ba074..058fffc0 100644
+--- a/backend/internal/infra/config/config_test.go
++++ b/backend/internal/infra/config/config_test.go
+@@ -281,13 +281,13 @@ func TestBuildResponseHeaderTimeoutIsRuntimeOnly(t *testing.T) {
+ 
+ func TestDefaultGrokBuildClientVersionMatchesLocalBaseline(t *testing.T) {
+ 	build := defaultConfig().Provider.Build
+-	if RecommendedBuildClientVersion != "1.0.40" {
++	if RecommendedBuildClientVersion != "1.0.4" {
+ 		t.Fatalf("recommended clientVersion = %q", RecommendedBuildClientVersion)
+ 	}
+ 	if build.ClientVersion != RecommendedBuildClientVersion {
+ 		t.Fatalf("clientVersion = %q", build.ClientVersion)
+ 	}
+-	if RecommendedBuildUserAgent != "grok-shell/1.0.40 (linux; x86_64)" {
++	if RecommendedBuildUserAgent != "grok-shell/1.0.4 (linux; x86_64)" {
+ 		t.Fatalf("recommended userAgent = %q", RecommendedBuildUserAgent)
+ 	}
+ 	if build.UserAgent != RecommendedBuildUserAgent {
+diff --git a/backend/internal/infra/provider/cli/adapter.go b/backend/internal/infra/provider/cli/adapter.go
+index f2360642..db5e216f 100644
+--- a/backend/internal/infra/provider/cli/adapter.go
++++ b/backend/internal/infra/provider/cli/adapter.go
+@@ -12,7 +12,6 @@ import (
+ 	"fmt"
+ 	"io"
+ 	"log/slog"
+-	"math"
+ 	"net/http"
+ 	"strconv"
+ 	"strings"
+@@ -811,22 +810,6 @@ type buildModelCatalogEntry struct {
+ 		ModelID string `json:"modelId"`
+ 		Hidden  bool   `json:"hidden"`
+ 	} `json:"_meta"`
+-	// Reasoning and budget metadata, mirroring the keys grok-build reads in
+-	// xai-grok-shell remote/client.rs parse_remote_model_value. Snake and camel
+-	// case spellings are both accepted there, so both are accepted here.
+-	ContextWindow            int64  `json:"context_window"`
+-	ContextWindowCamel       int64  `json:"contextWindow"`
+-	MaxCompletionTokens      int64  `json:"max_completion_tokens"`
+-	MaxCompletionTokensCamel int64  `json:"maxCompletionTokens"`
+-	ReasoningEffort          string `json:"reasoning_effort"`
+-	ReasoningEffortCamel     string `json:"reasoningEffort"`
+-	SupportsReasoningEffort  *bool  `json:"supports_reasoning_effort"`
+-	SupportsReasoningCamel   *bool  `json:"supportsReasoningEffort"`
+-	SupportsBackendSearch    bool   `json:"supports_backend_search"`
+-	// reasoning_efforts entries are either bare strings ("high") or objects
+-	// {value,id,label,description,default}; decode lazily per entry.
+-	ReasoningEfforts      []json.RawMessage `json:"reasoning_efforts"`
+-	ReasoningEffortsCamel []json.RawMessage `json:"reasoningEfforts"`
+ }
+ 
+ // modelIdentifier keeps the legacy top-level id authoritative and uses the
+@@ -840,81 +823,6 @@ func (e buildModelCatalogEntry) modelIdentifier() string {
+ 	return firstNonEmpty(e.ID, e.Model, e.ModelID, e.Meta.Model, e.Meta.ModelID)
+ }
+ 
+-// reasoningMenu decodes reasoning_efforts the way grok-build's
+-// parse_reasoning_effort_options does: each entry is a bare effort string or an
+-// object with a required `value`; unreadable entries are skipped instead of
+-// discarding the whole menu. It returns the ordered values and the entry
+-// flagged default (empty when none is flagged).
+-func (e buildModelCatalogEntry) reasoningMenu() (values []string, defaultValue string) {
+-	raw := e.ReasoningEfforts
+-	if len(raw) == 0 {
+-		raw = e.ReasoningEffortsCamel
+-	}
+-	for _, entry := range raw {
+-		var bare string
+-		if err := json.Unmarshal(entry, &bare); err == nil {
+-			if bare = strings.TrimSpace(bare); bare != "" {
+-				values = append(values, bare)
+-			}
+-			continue
+-		}
+-		var option struct {
+-			Value   string `json:"value"`
+-			Default bool   `json:"default"`
+-		}
+-		if err := json.Unmarshal(entry, &option); err != nil {
+-			continue
+-		}
+-		value := strings.TrimSpace(option.Value)
+-		if value == "" {
+-			continue
+-		}
+-		values = append(values, value)
+-		if option.Default && defaultValue == "" {
+-			defaultValue = value
+-		}
+-	}
+-	return values, defaultValue
+-}
+-
+-// upstreamProfile projects the catalog entry onto the domain profile.
+-func (e buildModelCatalogEntry) upstreamProfile() modeldomain.UpstreamModelProfile {
+-	menu, menuDefault := e.reasoningMenu()
+-	supports := false
+-	switch {
+-	case e.SupportsReasoningEffort != nil:
+-		supports = *e.SupportsReasoningEffort
+-	case e.SupportsReasoningCamel != nil:
+-		supports = *e.SupportsReasoningCamel
+-	}
+-	contextWindow := e.ContextWindow
+-	if contextWindow <= 0 {
+-		contextWindow = e.ContextWindowCamel
+-	}
+-	maxCompletion := e.MaxCompletionTokens
+-	if maxCompletion <= 0 {
+-		maxCompletion = e.MaxCompletionTokensCamel
+-	}
+-	return modeldomain.UpstreamModelProfile{
+-		ReasoningEfforts:        menu,
+-		DefaultReasoningEffort:  firstNonEmpty(menuDefault, e.ReasoningEffort, e.ReasoningEffortCamel),
+-		SupportsReasoningEffort: supports,
+-		ContextWindow:           clampInt(contextWindow),
+-		MaxCompletionTokens:     clampInt(maxCompletion),
+-		SupportsBackendSearch:   e.SupportsBackendSearch,
+-	}
+-}
+-
+-func clampInt(value int64) int {
+-	if value <= 0 {
+-		return 0
+-	}
+-	if value > math.MaxInt32 {
+-		return math.MaxInt32
+-	}
+-	return int(value)
+-}
+-
+ func (a *Adapter) listModelsAt(ctx context.Context, credential account.Credential, accessToken, base string) ([]string, int, error) {
+ 	requestCtx := infraegress.WithCredential(ctx, credential)
+ 	req, err := http.NewRequestWithContext(requestCtx, http.MethodGet, a.urlWithBase(base, "/models"), nil)
+@@ -961,9 +869,6 @@ func (a *Adapter) listModelsAt(ctx context.Context, credential account.Credentia
+ 		}
+ 		seen[identifier] = struct{}{}
+ 		models = append(models, identifier)
+-		// Publish the live reasoning menu / context budget so effort validation,
+-		// aliases, and catalog output follow the upstream catalog like grok-build does.
+-		modeldomain.RegisterUpstreamModelProfile(identifier, item.upstreamProfile())
+ 	}
+ 	a.recordModelsETag(credential.ID, resp.Header.Get("ETag"))
+ 	return models, resp.StatusCode, nil
+@@ -1129,9 +1034,6 @@ func (a *Adapter) applyHeaders(req *http.Request, credential account.Credential,
+ 		if sessionID != "" {
+ 			req.Header.Set("x-grok-session-id", sessionID)
+ 			req.Header.Set("x-grok-conv-id", sessionID)
+-			// grok-build derives x-grok-conv-group-id from the root session so the
+-			// proxy can group a root conversation with its subagent descendants.
+-			req.Header.Set("x-grok-conv-group-id", grokConversationGroupID(sessionID))
+ 		}
+ 		req.Header.Set("x-grok-req-id", requestID)
+ 		// The gateway cannot reliably recover the CLI prompt index from a stateless API request.
+@@ -1178,17 +1080,6 @@ func grokSessionID(promptCacheKey string) (string, error) {
+ 	return uuid.NewHash(sha256.New(), uuid.NameSpaceURL, []byte("grok2api:session:"+key), 8).String(), nil
+ }
+ 
+-// grokConversationGroupIDNamespace mirrors xai-grok-shell `CONVERSATION_GROUP_NAMESPACE`.
+-const grokConversationGroupIDNamespace = "xai:grok-build:conversation-group:"
+-
+-// grokConversationGroupID reproduces grok-build `derive_conversation_group_id`:
+-// UUIDv5(NAMESPACE_OID, namespace + root_session_id). The gateway treats each
+-// stable session as its own root conversation, so the group id derives from the
+-// same session id sent as x-grok-conv-id.
+-func grokConversationGroupID(rootSessionID string) string {
+-	return uuid.NewSHA1(uuid.NameSpaceOID, []byte(grokConversationGroupIDNamespace+rootSessionID)).String()
+-}
+-
+ func injectPromptCacheKey(body []byte, clientKey string) ([]byte, error) {
+ 	key := strings.TrimSpace(clientKey)
+ 	if key == "" {
+diff --git a/backend/internal/infra/provider/cli/adapter_test.go b/backend/internal/infra/provider/cli/adapter_test.go
+index 42e66943..5da67e29 100644
+--- a/backend/internal/infra/provider/cli/adapter_test.go
++++ b/backend/internal/infra/provider/cli/adapter_test.go
+@@ -10,7 +10,6 @@ import (
+ 	"io"
+ 	"net/http"
+ 	"net/http/httptest"
+-	"os"
+ 	"strings"
+ 	"testing"
+ 	"time"
+@@ -279,7 +278,7 @@ func TestForwardResponseMatchesGrokBuildHeadersAndPreservesReasoning(t *testing.
+ 		}
+ 		requestUUID, requestErr := uuid.Parse(requestID)
+ 		agentUUID, agentErr := uuid.Parse(r.Header.Get("x-grok-agent-id"))
+-		if requestErr != nil || requestUUID.Version() != uuid.Version(4) || agentErr != nil || agentUUID.Version() != uuid.Version(4) || sessionID != expectedSessionID || r.Header.Get("x-grok-conv-id") != sessionID || r.Header.Get("x-grok-conv-group-id") != grokConversationGroupID(sessionID) {
++		if requestErr != nil || requestUUID.Version() != uuid.Version(4) || agentErr != nil || agentUUID.Version() != uuid.Version(4) || sessionID != expectedSessionID || r.Header.Get("x-grok-conv-id") != sessionID {
+ 			t.Fatalf("client identity headers = %#v", r.Header)
+ 		}
+ 		for _, legacy := range []string{"x-grok-client-surface", "x-grok-client-name", "x-grok-conversation-id", "x-grok-session-id-legacy", "x-grok-request-id"} {
+@@ -1450,67 +1449,3 @@ func TestForwardResponsePreservesTruncatedRateLimitDiagnostic(t *testing.T) {
+ 		t.Fatalf("diagnostic = %#v", response.Diagnostic)
+ 	}
+ }
+-
+-// TestListModelsRegistersUpstreamReasoningMenu replays a real cli-chat-proxy
+-// /v1/models payload (grok-build 1.0.40 era) and checks the live reasoning
+-// menu drives domain capabilities the same way it drives grok-build's picker.
+-func TestListModelsRegistersUpstreamReasoningMenu(t *testing.T) {
+-	modeldomain.ResetUpstreamProfiles()
+-	t.Cleanup(modeldomain.ResetUpstreamProfiles)
+-	catalog, err := os.ReadFile("testdata/build_models_catalog.json")
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	cipher, err := security.NewCipher(base64.StdEncoding.EncodeToString(make([]byte, 32)))
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	encrypted, err := cipher.Encrypt("access-token")
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	adapter := NewAdapter(Config{BaseURL: "https://cli-chat-proxy.grok.com/v1"}, cipher)
+-	adapter.http.Transport = roundTripFunc(func(request *http.Request) (*http.Response, error) {
+-		return &http.Response{StatusCode: http.StatusOK, Status: "200 OK", Header: make(http.Header), Body: io.NopCloser(bytes.NewReader(catalog)), Request: request}, nil
+-	})
+-	models, err := adapter.ListModels(context.Background(), account.Credential{EncryptedAccessToken: encrypted})
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	if len(models) != 2 || models[0] != "grok-4.7" || models[1] != "grok-4.6" {
+-		t.Fatalf("models = %#v", models)
+-	}
+-	for _, model := range models {
+-		profile, ok := modeldomain.UpstreamProfile(model)
+-		if !ok {
+-			t.Fatalf("%s profile not registered", model)
+-		}
+-		wantMenu := []string{"xhigh", "high", "medium", "low"}
+-		if strings.Join(profile.ReasoningEfforts, ",") != strings.Join(wantMenu, ",") || profile.DefaultReasoningEffort != "high" || !profile.SupportsReasoningEffort || profile.ContextWindow != 500000 {
+-			t.Fatalf("%s profile = %#v", model, profile)
+-		}
+-		if got := modeldomain.DefaultReasoningEffort(model); got != "high" {
+-			t.Fatalf("%s default = %q", model, got)
+-		}
+-		if !modeldomain.SupportsReasoningEffort(model, "xhigh") || modeldomain.SupportsReasoningEffort(model, "max") || modeldomain.SupportsReasoningEffort(model, "none") {
+-			t.Fatalf("%s effort gate drifted from catalog", model)
+-		}
+-	}
+-	if profile, _ := modeldomain.UpstreamProfile("grok-4.7"); profile.MaxCompletionTokens != 1000000 || !profile.SupportsBackendSearch {
+-		t.Fatalf("grok-4.7 profile = %#v", profile)
+-	}
+-	if profile, _ := modeldomain.UpstreamProfile("grok-4.6"); profile.MaxCompletionTokens != 0 || profile.SupportsBackendSearch {
+-		t.Fatalf("grok-4.6 profile = %#v", profile)
+-	}
+-}
+-
+-func TestCatalogEntryReasoningMenuAcceptsBareAndObjectEntries(t *testing.T) {
+-	var entry buildModelCatalogEntry
+-	if err := json.Unmarshal([]byte(`{"id":"m","reasoningEfforts":["low",{"value":"max","default":true},{"label":"no value"},"","medium"],"contextWindow":1234,"supportsReasoningEffort":true}`), &entry); err != nil {
+-		t.Fatal(err)
+-	}
+-	profile := modeldomain.NormalizeUpstreamProfile(entry.upstreamProfile())
+-	if strings.Join(profile.ReasoningEfforts, ",") != "low,max,medium" || profile.DefaultReasoningEffort != "max" || profile.ContextWindow != 1234 || !profile.SupportsReasoningEffort {
+-		t.Fatalf("profile = %#v", profile)
+-	}
+-}
+diff --git a/backend/internal/infra/provider/cli/normalize.go b/backend/internal/infra/provider/cli/normalize.go
+index a34dbdc1..6658bf37 100644
+--- a/backend/internal/infra/provider/cli/normalize.go
++++ b/backend/internal/infra/provider/cli/normalize.go
+@@ -203,11 +203,10 @@ func applyBuildResponseDefaults(payload map[string]json.RawMessage) (bool, error
+ }
+ 
+ // normalizeBuildReasoningEffortPayload maps client aliases to levels accepted by
+-// the selected Grok model. grok-build treats minimal/xhigh/max as distinct wire
+-// tiers, so a tier the model's catalog menu lists is forwarded verbatim. Only
+-// tiers the model does not offer are folded onto the nearest offered level:
+-// minimal -> low, max -> xhigh -> high. Grok 4.5 and unknown models therefore
+-// retain the proven defensive xhigh/max -> high behavior.
++// the selected Grok model. Grok 4.5 and unknown models retain the proven defensive
++// xhigh/max -> high behavior for models without an xhigh wire contract. Models
++// that explicitly support xhigh keep xhigh and map the client-only max alias to
++// that highest verified upstream level.
+ func normalizeBuildReasoningEffortPayload(payload map[string]json.RawMessage, model string) bool {
+ 	raw, exists := payload["reasoning"]
+ 	if !exists || isEmptyJSON(raw) {
+@@ -236,15 +235,22 @@ func normalizeBuildReasoningEffortPayload(payload map[string]json.RawMessage, mo
+ 	if err := json.Unmarshal(reasoning["effort"], &effort); err != nil {
+ 		return false
+ 	}
+-	requested := strings.ToLower(strings.TrimSpace(effort))
+ 	var normalized string
+-	switch requested {
+-	case modeldomain.ReasoningEffortMinimal:
+-		normalized = foldBuildReasoningEffort(model, modeldomain.ReasoningEffortMinimal, modeldomain.ReasoningEffortLow)
+-	case modeldomain.ReasoningEffortXHigh:
+-		normalized = foldBuildReasoningEffort(model, modeldomain.ReasoningEffortXHigh, modeldomain.ReasoningEffortHigh)
+-	case modeldomain.ReasoningEffortMax:
+-		normalized = foldBuildReasoningEffort(model, modeldomain.ReasoningEffortMax, modeldomain.ReasoningEffortXHigh, modeldomain.ReasoningEffortHigh)
++	switch strings.ToLower(strings.TrimSpace(effort)) {
++	case "minimal":
++		normalized = modeldomain.ReasoningEffortLow
++	case "xhigh":
++		if modeldomain.SupportsReasoningEffort(model, modeldomain.ReasoningEffortXHigh) {
++			normalized = modeldomain.ReasoningEffortXHigh
++		} else {
++			normalized = modeldomain.ReasoningEffortHigh
++		}
++	case "max":
++		if modeldomain.SupportsReasoningEffort(model, modeldomain.ReasoningEffortXHigh) {
++			normalized = modeldomain.ReasoningEffortXHigh
++		} else {
++			normalized = modeldomain.ReasoningEffortHigh
++		}
+ 	default:
+ 		return false
+ 	}
+@@ -256,18 +262,6 @@ func normalizeBuildReasoningEffortPayload(payload map[string]json.RawMessage, mo
+ 	return true
+ }
+ 
+-// foldBuildReasoningEffort returns the first candidate tier the model offers,
+-// falling back to the last candidate when none is offered. Candidates are
+-// ordered from the requested tier down to the proven safe level.
+-func foldBuildReasoningEffort(model string, candidates ...string) string {
+-	for _, candidate := range candidates {
+-		if modeldomain.SupportsReasoningEffort(model, candidate) {
+-			return candidate
+-		}
+-	}
+-	return candidates[len(candidates)-1]
+-}
+-
+ // patchReasoningTextTypes 瀵归綈瀹樻柟 CLI 鐨勫簭鍒楀寲鍚庝慨琛ワ細Responses 涓婃父瑕佹眰
+ // reasoning.content[*] 蹇呴』鎼哄甫 type=reasoning_text锛屽嵆浣块儴鍒嗗鎴风鍙彂閫?text銆? func patchReasoningTextTypes(payload map[string]json.RawMessage) {
+diff --git a/backend/internal/infra/provider/cli/normalize_test.go b/backend/internal/infra/provider/cli/normalize_test.go
+index c59e0d61..8e6fff3c 100644
+--- a/backend/internal/infra/provider/cli/normalize_test.go
++++ b/backend/internal/infra/provider/cli/normalize_test.go
+@@ -62,17 +62,7 @@ func TestNormalizeBuildReasoningEffort(t *testing.T) {
+ 		{name: "minimal maps to low", model: "grok-4.6", effort: "minimal", want: "low"},
+ 		{name: "high", model: "grok-4.5", effort: "high", want: "high"},
+ 		{name: "medium", model: "grok-4.5", effort: "medium", want: "medium"},
+-		// Catalog-driven menus (grok-build reasoning_efforts) override the static table.
+-		{name: "catalog max forwarded verbatim", model: "grok-menu-max", effort: "max", want: "max"},
+-		{name: "catalog minimal forwarded verbatim", model: "grok-menu-max", effort: "minimal", want: "minimal"},
+-		{name: "catalog without xhigh folds max to high", model: "grok-menu-plain", effort: "max", want: "high"},
+-		{name: "catalog without xhigh folds xhigh to high", model: "grok-menu-plain", effort: "XHIGH", want: "high"},
+-		{name: "catalog without low folds minimal to low fallback", model: "grok-menu-plain", effort: "minimal", want: "low"},
+-	}
+-	modeldomain.ResetUpstreamProfiles()
+-	t.Cleanup(modeldomain.ResetUpstreamProfiles)
+-	modeldomain.RegisterUpstreamModelProfile("grok-menu-max", modeldomain.UpstreamModelProfile{ReasoningEfforts: []string{"minimal", "low", "medium", "high", "xhigh", "max"}})
+-	modeldomain.RegisterUpstreamModelProfile("grok-menu-plain", modeldomain.UpstreamModelProfile{ReasoningEfforts: []string{"medium", "high"}})
++	}
+ 	for _, test := range tests {
+ 		t.Run(test.name, func(t *testing.T) {
+ 			body := []byte(`{"reasoning":{"effort":"` + test.effort + `"},"input":"hello"}`)
+diff --git a/backend/internal/infra/provider/cli/responses_reasoning_recovery_test.go b/backend/internal/infra/provider/cli/responses_reasoning_recovery_test.go
+index 0111f6aa..5c8e0c34 100644
+--- a/backend/internal/infra/provider/cli/responses_reasoning_recovery_test.go
++++ b/backend/internal/infra/provider/cli/responses_reasoning_recovery_test.go
+@@ -273,7 +273,7 @@ func TestRecoverReasoningDecodeFailureResetsSessionWithoutOpaqueInput(t *testing
+ 			}
+ 			return jsonHTTPResponse(request, http.StatusBadRequest, `{"error":"Could not decode the compaction blob. Ensure it is unmodified from the compact response."}`), nil
+ 		case 2:
+-			if request.Header.Get("x-grok-session-id") != "" || request.Header.Get("x-grok-conv-id") != "" || request.Header.Get("x-grok-conv-group-id") != "" || strings.Contains(string(data), `"prompt_cache_key"`) {
++			if request.Header.Get("x-grok-session-id") != "" || request.Header.Get("x-grok-conv-id") != "" || strings.Contains(string(data), `"prompt_cache_key"`) {
+ 				t.Fatalf("stateless recovery headers=%#v body=%s", request.Header, data)
+ 			}
+ 			return jsonHTTPResponse(request, http.StatusOK, `{"id":"resp_ok","status":"completed","output":[]}`), nil
+diff --git a/backend/internal/infra/provider/cli/session_id_test.go b/backend/internal/infra/provider/cli/session_id_test.go
+index d22101fd..bd7edad7 100644
+--- a/backend/internal/infra/provider/cli/session_id_test.go
++++ b/backend/internal/infra/provider/cli/session_id_test.go
+@@ -27,19 +27,3 @@ func TestGrokSessionIDStableForSameKey(t *testing.T) {
+ 		t.Fatalf("unstable: first=%q second=%q err=%v", first, second, err)
+ 	}
+ }
+-
+-func TestGrokConversationGroupIDMatchesGrokBuildDerivation(t *testing.T) {
+-	// Reference vector: uuid5(NAMESPACE_OID, "xai:grok-build:conversation-group:" + root_session_id),
+-	// identical to xai-grok-shell `derive_conversation_group_id`.
+-	const root = "0f4c7a1e-6c1b-5a0e-8e6c-3b0f6a6a2a1d"
+-	got := grokConversationGroupID(root)
+-	if got != "d5de345a-3509-59bc-b73c-7d33029d840b" {
+-		t.Fatalf("conversation group id = %q", got)
+-	}
+-	if again := grokConversationGroupID(root); again != got {
+-		t.Fatalf("unstable: first=%q second=%q", got, again)
+-	}
+-	if other := grokConversationGroupID("another-root"); other == got {
+-		t.Fatalf("different roots must not share a group id: %q", other)
+-	}
+-}
+diff --git a/backend/internal/infra/provider/cli/testdata/build_models_catalog.json b/backend/internal/infra/provider/cli/testdata/build_models_catalog.json
+deleted file mode 100644
+index 1c03ce91..00000000
+--- a/backend/internal/infra/provider/cli/testdata/build_models_catalog.json
++++ /dev/null
+@@ -1,100 +0,0 @@
+-{
+-  "object": "list",
+-  "data": [
+-    {
+-      "id": "grok-4.7",
+-      "object": "model",
+-      "owned_by": "xAI",
+-      "model": "grok-4.7",
+-      "model_family": "xai",
+-      "name": "Grok 4.7",
+-      "description": "SpaceXAI's latest frontier model",
+-      "context_window": 500000,
+-      "auto_compact_threshold_percent": 80,
+-      "system_prompt_label": "Grok 4.7",
+-      "max_completion_tokens": 1000000,
+-      "api_backend": "responses",
+-      "reasoning_effort": "high",
+-      "supports_reasoning_effort": true,
+-      "reasoning_efforts": [
+-        {
+-          "id": "xhigh",
+-          "value": "xhigh",
+-          "label": "Extra High",
+-          "description": "Maximum reasoning for the hardest tasks.",
+-          "default": false
+-        },
+-        {
+-          "id": "high",
+-          "value": "high",
+-          "label": "High",
+-          "description": "Thorough reasoning and quality. Recommended.",
+-          "default": true
+-        },
+-        {
+-          "id": "medium",
+-          "value": "medium",
+-          "label": "Medium",
+-          "description": "Strong quality with a faster turnaround.",
+-          "default": false
+-        },
+-        {
+-          "id": "low",
+-          "value": "low",
+-          "label": "Low",
+-          "description": "Fastest responses. Best for simple tasks.",
+-          "default": false
+-        }
+-      ],
+-      "supports_backend_search": true,
+-      "compactions_remaining": 1,
+-      "compaction_at_tokens": true
+-    },
+-    {
+-      "id": "grok-4.6",
+-      "object": "model",
+-      "owned_by": "xAI",
+-      "model": "grok-4.6",
+-      "model_family": "xai",
+-      "name": "Grok 4.6",
+-      "context_window": 500000,
+-      "auto_compact_threshold_percent": 80,
+-      "system_prompt_label": "Grok 4.6",
+-      "api_backend": "responses",
+-      "reasoning_effort": "high",
+-      "supports_reasoning_effort": true,
+-      "reasoning_efforts": [
+-        {
+-          "id": "xhigh",
+-          "value": "xhigh",
+-          "label": "Extra High",
+-          "description": "Highest effort and reasoning level",
+-          "default": false
+-        },
+-        {
+-          "id": "high",
+-          "value": "high",
+-          "label": "High",
+-          "description": "Higher implementation quality with extensive reasoning",
+-          "default": true
+-        },
+-        {
+-          "id": "medium",
+-          "value": "medium",
+-          "label": "Medium",
+-          "description": "Balanced effort with standard implementation and testing",
+-          "default": false
+-        },
+-        {
+-          "id": "low",
+-          "value": "low",
+-          "label": "Low",
+-          "description": "Quick, fast implementations",
+-          "default": false
+-        }
+-      ],
+-      "compactions_remaining": 1,
+-      "compaction_at_tokens": true
+-    }
+-  ]
+-}
+\ No newline at end of file
+diff --git a/backend/internal/infra/provider/cli/video_test.go b/backend/internal/infra/provider/cli/video_test.go
+index 53141455..30ad19c9 100644
+--- a/backend/internal/infra/provider/cli/video_test.go
++++ b/backend/internal/infra/provider/cli/video_test.go
+@@ -548,7 +548,7 @@ func TestGenerateVideoFailedStatusAndDownloadTrustedURL(t *testing.T) {
+ 		for _, key := range []string{
+ 			"Authorization", "X-XAI-Token-Auth", "x-userid",
+ 			"x-grok-model-override", "x-grok-session-id", "x-grok-agent-id",
+-			"x-grok-conv-id", "x-grok-conv-group-id", "x-grok-req-id", "x-grok-conversation-id",
++			"x-grok-conv-id", "x-grok-req-id", "x-grok-conversation-id",
+ 			"x-grok-session-id-legacy", "x-grok-request-id",
+ 			"x-grok-client-version", "x-grok-client-identifier",
+ 		} {
+diff --git a/backend/internal/infra/provider/conversation/messages_request.go b/backend/internal/infra/provider/conversation/messages_request.go
+index d62e0d81..a38a90ea 100644
+--- a/backend/internal/infra/provider/conversation/messages_request.go
++++ b/backend/internal/infra/provider/conversation/messages_request.go
+@@ -107,10 +107,10 @@ func convertMessagesRequestWithReasoningReplay(body []byte, model string, cache
+ 		if request.OutputConfig != nil && request.OutputConfig.Effort != "" {
+ 			effort = request.OutputConfig.Effort
+ 		}
+-		// Every grok-build wire tier passes through; the Build normalizer folds
+-		// tiers the selected model's catalog menu does not offer.
+ 		switch effort {
+-		case "minimal", "low", "medium", "high", "xhigh", "max":
++		case "minimal":
++			effort = "low"
++		case "low", "medium", "high", "xhigh", "max":
+ 		default:
+ 			return nil, ResponseOptions{}, fmt.Errorf("涓嶆敮鎸?output_config.effort=%q", effort)
+ 		}
+diff --git a/backend/internal/transport/http/inference/codex_models.go b/backend/internal/transport/http/inference/codex_models.go
+index f52be370..da843eef 100644
+--- a/backend/internal/transport/http/inference/codex_models.go
++++ b/backend/internal/transport/http/inference/codex_models.go
+@@ -69,13 +69,12 @@ type codexModelCatalog struct {
+ }
+ 
+ var codexReasoningDescriptions = map[string]string{
+-	"none":    "No reasoning",
+-	"minimal": "Minimal reasoning for the fastest responses",
+-	"low":     "Fast responses with lighter reasoning",
+-	"medium":  "Balances speed and reasoning depth for everyday tasks",
+-	"high":    "Greater reasoning depth for complex problems",
+-	"xhigh":   "Extra high reasoning depth for complex problems",
+-	"max":     "Maximum reasoning depth for the hardest problems",
++	"none":   "No reasoning",
++	"low":    "Fast responses with lighter reasoning",
++	"medium": "Balances speed and reasoning depth for everyday tasks",
++	"high":   "Greater reasoning depth for complex problems",
++	"xhigh":  "Extra high reasoning depth for complex problems",
++	"max":    "Maximum reasoning depth for the hardest problems",
+ }
+ 
+ type grokModelCapability struct {
+@@ -89,7 +88,6 @@ type grokModelCapability struct {
+ var grokCapabilities = map[string]grokModelCapability{
+ 	"grok-4.5":                     {500000, "xAI Grok 4.5 frontier model with reasoning and vision.", true},
+ 	"grok-4.6":                     {500000, "xAI Grok 4.6 frontier model with reasoning and vision.", true},
+-	"grok-4.7":                     {500000, "xAI Grok 4.7 frontier model with reasoning and vision.", true},
+ 	"grok-4.3":                     {1000000, "xAI Grok 4.3 high-capacity reasoning model.", true},
+ 	"grok-build-0.1":               {256000, "xAI Grok Build 0.1 coding model.", false},
+ 	"grok-4.20-0309-reasoning":     {2000000, "xAI Grok 4.20 reasoning model.", true},
+@@ -111,18 +109,10 @@ func lookupGrokCapability(providerValue account.Provider, slug string) (grokMode
+ 		slug = base
+ 	}
+ 	levels := modeldomain.SupportedReasoningEffortsForProvider(providerValue, slug)
+-	capability, ok := grokCapabilities[slug]
+-	if !ok {
+-		capability = grokDefaultCapability
++	if capability, ok := grokCapabilities[slug]; ok {
++		return capability, levels
+ 	}
+-	// The live Build catalog (context_window) is authoritative over the static
+-	// table once an account has synchronized it, exactly like grok-build.
+-	if providerValue == account.ProviderBuild {
+-		if profile, exists := modeldomain.UpstreamProfile(slug); exists && profile.ContextWindow > 0 {
+-			capability.contextWindow = profile.ContextWindow
+-		}
+-	}
+-	return capability, levels
++	return grokDefaultCapability, levels
+ }
+ 
+ func codexVisibilityForCapability(capability modeldomain.Capability) string {
+diff --git a/backend/internal/transport/http/settings/security_test.go b/backend/internal/transport/http/settings/security_test.go
+index 72606d72..1b49ed72 100644
+--- a/backend/internal/transport/http/settings/security_test.go
++++ b/backend/internal/transport/http/settings/security_test.go
+@@ -47,9 +47,9 @@ func TestSettingsResponseIncludesBuildTokenAuth(t *testing.T) {
+ 
+ func TestSettingsResponseIncludesRecommendedBuildBaseline(t *testing.T) {
+ 	response := newSettingsResponse(settingsapp.Snapshot{RecommendedProviderBuild: settingsapp.ProviderBuildRecommendation{
+-		ClientVersion: "1.0.40", UserAgent: "grok-shell/1.0.40 (linux; x86_64)",
++		ClientVersion: "1.0.4", UserAgent: "grok-shell/1.0.4 (linux; x86_64)",
+ 	}})
+-	if response.RecommendedProviderBuild.ClientVersion != "1.0.40" || response.RecommendedProviderBuild.UserAgent == "" {
++	if response.RecommendedProviderBuild.ClientVersion != "1.0.4" || response.RecommendedProviderBuild.UserAgent == "" {
+ 		t.Fatalf("recommended build = %#v", response.RecommendedProviderBuild)
+ 	}
+ }
+diff --git a/docker-compose.override.yml b/docker-compose.override.yml
+new file mode 100644
+index 00000000..aa13982d
+--- /dev/null
++++ b/docker-compose.override.yml
+@@ -0,0 +1,9 @@
++# 浜屽紑鏈湴瑕嗙洊锛歞ocker compose 浼氳嚜鍔ㄥ悎骞舵湰鏂囦欢銆?+# 浣跨敤褰撳墠鐩綍婧愮爜鏋勫缓闀滃儚锛屾ā鍨嬭矾鐢卞叏閫夌瓑鏈湴淇敼鎵嶄細杩涘叆杩愯涓殑鏈嶅姟銆?+# 鑻ュ彧鎯崇敤鍘熶綔鑰呭畼鏂归暅鍍忥紝鍒犻櫎鎴栨敼鍚嶆湰鏂囦欢鍗冲彲銆?+services:
++  grok2api:
++    image: grok2api:local
++    build:
++      context: .
++      dockerfile: Dockerfile
+diff --git a/frontend/public/sponner/rapid-proxy.jpg b/frontend/public/sponner/rapid-proxy.jpg
+deleted file mode 100644
+index 89f9c28cef8ffda911a1cfdcd136ae6054b8f169..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 11296
+zcmb`tby!qU_dj}OhR&f=7)p_DLApVu8|k6DJB9`+r9)|ul<w|Ux<M%=L>dW!JNmx&
+ze!tJ}pZnbBxohT}`JBD??6ddTtM*#wVe#P`0DU2+C<lN*AV2~60UkC%D~i(6#;WQn
+za*D5Hkre;{8Uv67mH+?;M|W3sc`2B#o<0otUt|h*bN*kK|0hKDaXAkl&j2vPuI7%4
+z|9>|4f4RnVMcxqE<`{VpTm8czl)u>QKbZV4_HuW2M~;>4FNQn2{>2hVjN_`QE{(*m
+zkQiq5zp&Z=!sZrkaAX^MWE<oEnVVA%00^D~0OZ~Ol$oUhKvN_Dkgxtv8Dky*;D-Z1
+z<IMk*ovHkrFNn0)-NG9=764G@lmwhjT}}UD0D?TgmX-i;`Vjzd^#Fiq5&*DX|7RTk
+zTA;ciAM`);|KI6h1&{_%AdtUb6bK3`3JNM37CIV|a51qku<&uAP<&i`JOUzeVgf=k
+zLOgsDY7#OE3MwipDDflON0hYWlvI>|I{~4fqN1Uq;h>}AP!ix1Q2u|WhhBgH1Be9c
+zLO}EYm;eMJ06p{r)PLCxg5<@2tnzQ(AXGGT6bKjtSxfb|{BQ05JP;5VISVxOhh+c<
+z0s_EL2o$-BI|VB55n$3N3``V#7z#=%3s@J^7K&iP$d!P>F!DjFnC7`m2(T&$LzNk@
+zjG+ETXN|yk%ajYlFsw3K`$39rJ7m$W(ta)0f+ueGdfJbsVeb2x;DlceZFm-EjP@Uq
+zXD4|I%&Yb1dr3=ME4dRld>3}`AWGd*lT=kHEK;V#a3&}qk&6I-kB*OlRtJMX>>xlQ
+z)NS>6=_vh<Ds|&i-_aj2vfQ7v#$-SBpDjr3e)}Mu=0TH<``Y40up<E9deHZ#{YxYI
+z(t*Y9ot2P4$5KV-)VDq_@s)d8hd(}SVhrpNN1985+imDgZbKVQWaal>f!Va2IYuk|
+zN7KC7N=;52pH_Wjvy5nqP2D}dc{rr$pNpvOZDNFkFg;}hP{)%Vfk{Bnzf;CwxZs4J
+z*aqTbA3F1V@!M?7e%E(d^<<wid!*9y8ZTu+hdTafBK_y*Uw=yDKc_`a-;p2wq+FLy
+zKEAnq0LrtJk7!NSg@oCjD|0H|jo(_9r*DhUe383#6I$Cg=cR1lKf6g=NEW<%)p;^b
+z)$&~XUCixL_MZMdWa4)N{>U$X1Q;o<sQ~ypK}0an07!L1p#<vP5-98;P?S7k3=|X)
+zG0Ia65F0pgL@ER+^UQQ?xd!dr(-I&6(*!oW)g~-X8ol7bRyX5JyYL=MIq)cx$8G5R
+zah;Rs((Ok!i(&sYW6Sj8C$E;2DUbg6pSk;2mF;wYJbzsAJ~2pgcVxowXtC?_ue&k0
+z*4JZ0ot*w1@_+?yx1N2W%1vd_>Vq{aD`klGS9dmk`zHTc{u8$keOh~d9qbVM6`x<!
+z%}Oy}n-q&|Iy98WEX&e@Dgk2Po!KOXWIR$Ogs~9^Px|}{@TJ+Q+@)|hG|+i^{VYMd
+zF1V>8h~M4OBA#|S{SRK3+uFHtDk#Bq)Rq17kL&NEN7pw>1shfVi@!g+Z2u^qe4d^2
+zh5eWQeNMc=!huR1wekZn{#->ou4d!HFbFTG>1F?(ki*Ggr@f=0kU`FY)R6K<ogM9a
+zpZh?A-y%y3OYR188&z4t=R2<%`xxRct*?)U@Dfbe0T_!aY!t@>Ll*_ijzFXW1lDh1
+zVA9657mpx0F<=-B+)bybnyM;84Ax@?U|4UF3K%OVg+rNqAB-vi1_A66QUF3~5(Wbh
+z2uTS90$>jY>jD5meV7RgKxGX1iWFHMC;$e70SF2P8d5(05(+990zv}_NeGCD`O!&X
+z3|xE?s?f*WJOU>4jLy7BNyb15I0zN|0HnaFmv&t@8`7iisKuTO`n#K4HQ*BVNa<2P
+z0C_Qj+HwZCvFPG{bJAO7kps^b{Jp(!6ll<Oe6-x@uR8QJ<yUmeLeW?%)K#$hg9`<~
+z)fT_`H08X1u@2!nO$@>*Qk~gPM-i5cg1(kQ-ioJawJiBFX)ao1@^)C0TI90OOA7=6
+z-u1!cP9-dHBcvs?w^~G@UxSTIt_w%fcVCVHes{KDw^K=;vGJx9HGGtn&)Tl$FfSl1
+zWiqVz*}>vAW!bhg@j7AA8&^*rXoqBGEb5CB5gT?=P1GQBC1V&*8lx4557Txu*L(XR
+zbm4x%&u(nTN!wf|N$l@ZA?lpoo_+S$Z>{czx}MJnMUgDA6bA~=4F}2yZmM{)T0|9o
+z_Kg_1U9{px;~8i2>e7$drqFwuRV7c3+mM)XbC{UIu@zOLATvr)R146okIx9!8z2-l
+z`g(=80*6Hd=5T)g3jRY#w)(ZNN4TvEWqtwBwW^=Qt(aoXd1-2o>Y!>C)%im`c9fOG
+z@(ocmX0w%%t)hoBmW8+Fytmve7BuE)(SnLc-fLAoS<Lh2!N60FPr!%l8I9U*S0?9*
+zqL?sMG498fsSd2tx`TD-A_kbgsosznjyT8*z4x6%)Td+f*v;IP#adTz(Tu*^lMrfM
+zC2_#t4Z1n*{s7pLf6sc!fDj|$8c37${Z_cvh?VeX5vBn5=Oa8rD~(aHz{F<`f|DPP
+zM8|_GoeWCXWVBX|e^waUX;9jDR2m*LP=A&<@bt`1M!>ilGn~qrPE#Lsuk`Ma)<%}~
+zA3Ljquk28i3Fn4my+^I*3%NMO0?Uj?b#)-tt%p1K?79_Z`;SGt^m3Ielons(k&7;V
+z5=*I%RIk;Dg16XZUTOba-c~;mWe*5ht$D;jqlyW#!;rRk!AO@q-65;=*x~t{&1Q}Y
+zQ8%Qdlx4_F8{3fZZQC<_GRq1Z6Qh>+R+1ktbtP~b9gGX)J_r(O$SbMp+BKjG#rNjq
+zS4%U?X7CfS{<7EYJs>s%E&r^dt(l2QJ*j|KV^lb?Oau!ur7$iFAq4U>%O~c4&YQjM
+z>(?qOZ4>5j9D0I*E~fS|l;zVRR!PA<jaa0Cw4K7n!Ns5>e8E-J>grQ-CI|WJWLt`(
+zb*<Vl?zz$jV8v(9HBI7lP2)?W!M*+ZpCq$S76-l<3o}MjKW@lAIEi_0>O~afz7Vu(
+zjq}fO(ED`}A|CE5dd==7{=NftojB<m47mVao}p$=G^dk+Jjv|^%u-wluhc6n0}1#C
+zEs7^_UNv$#a<y(BRWm^be`GznJ7e*qDAZ$^H@N>S3yiADq+jY})Z=PB`y&#7mAd_e
+zf#$8t=n<T00mE~QD8X|<tX}(U-SmEH0oA6-gUJB9>vJpNp{|mCWmYlG#78yT-}VQR
+zPippe6mZM~+8(`Y*d%)d9g1t68vI4WEfKy9;`f#M?Ib`*qdd{~fup1DoKi>l7|)aJ
+zgL@`t`h0lp?-p^h`qp5vx!=AEc-lCXa2xzO-<`@&uQLvVHr2E#oc;Lg=N-pvNDf5j
+zh>abcTHIdFkIj#}R$I7HL6$^dODnvKHjO!6eM1WsOXN?3{gR~0Z?(mZ_jK=qir^Pp
+ze^np>073ylAYc?Q_J14~q@w~sAwVUhBjT1Mrst7RRWo&glEAq5q@>l~)lB_Ufk-z;
+z9CQ;N`3i%e@-f!Q9NPTa&{5d1wSx0}{R0qQvghn>$OuPa-b{oyawmRxF@|Q)cS~}h
+zXmiW(>;3c)X)=p~-A%&Ib;onkA+-$JH;{S#?LV^W)A<$mC7v(lJOqRyFj{Ua@vjQ5
+znKMoNDq0;TC^n=?JQo5+sIt8=PZm-W3~LUBbUGeUg!<}@T42CCDa8nR@~TkOURuii
+z>gmRut~F%eiCg*dM<@I_PrZ9x^4jy}W;D@4D=fkC*R?RXKyZ%etWo?x=<A~RKld*h
+zyp37+Mch7PH4Z<uk8w0yO}-O*wj4Vs8n4r8))yuX_`hFnFjm&1_(4uv@N$l!icHz*
+zQOa*g#+~C!mXtbW<y;D_qvx0(9t(Oo=gvOIb+^bcJ^tXYNcPd(Pfq)zEwh#5ZeO#~
+z9OH$k7e0A!sG9rh<?lP6jte_!L7#??vF6xii6`)5g~RyuL{$tD$a~|*HnS=|A6%5{
+zZ!yq=evC$(<=QnSxV4u$WT`biOK?8TPq}e0V{-lyeBl|J{B2e*ygt0TGM&}twX$=J
+zf@FcCc5h=!b^bKT0T1_`z{!xi{TMOo(b3k4Qg%NNcbzNsr}167)%E@QD!*fMR9QzG
+z@e*(iL)g2)FXDS1KXu(=WdP#&Vsmycc#6Ky2ky9j!GNKoLEh0-u39_-22{cAint}2
+zShf(2PLdo)0_R~p>WbKkTdnz5J`gtz>roRo6^d;XhV1@Wo@b!aO&>F{srMxtDQD3J
+zYt5L)y6-;F_gt4m+?qcC*1cRRc;ETkGPn2D8{72JlwET}jMZk@7sX!JehzFyvM49P
+zUn>m;{q?o~%c6g6HUS|Kog@^-Eun@=OwXX|!o|aDVj7(Hk3W%(#X)!SkH_@CjIDR|
+zbH43V6u*R9ERD1JtXgSO!BH=sA=Y;qD_KW!g{eM_EG-<I`EclepA~<nlb{#~UvB3w
+zjf|4~>2n!*9<=JVn4g=;z1(Lu`B6=OcKCq3CE@Gau(L>}723eup~fNiQss7u*o-&i
+zzu>>OpNedZR!{n0qw%iD8pf`y2HupBo~17D$GH9xON^*vaO%KUXn9p%?ev|9HcgfD
+z<eIOqt(w=5=Y(=-JBeDi;iT4B#rGr?9s}i^){9$|c6udhGPrpc-o*XXt75MKkMhDJ
+zlx+Y%A1^8<R=Wo-@cohUu6JWzuhFM!xMr0xT8<l|i`5C+5Gg_3H(!}t^_}Fa8+qB$
+zdScqH{jH@^BvrX-Xc&!Ahvo^@ej48%m46B+F^q~;yc+Nns~K4YyLyU8@K)=_uGR;>
+zdH}GxC$+sZip`$w;nRyjSxJ{D!wuq}hmPIP#Bg*|5mkiGYB|21?`jZ7u9G~{n*t&A
+z2r4=n4$8lkLhgS60u<yr{nI3Brl?R}DVMw+23NP>cQr6ZE(uk2GiUdZ#9BU${0$N&
+z6L{#<@qb+`G;#3V93Yr^-gjdw$mk%;no&L#RI-r&0H{^T-WM1%jz=C=)Fzl7A)PG-
+z8$T8&1KkIJ{bk&MK8a(QWz{ROKBM%2h&ri_p~&=_%|e3jgtBRz(N!8ZC3Qm{)ID9>
+z{7f8pcJ{Wq3n2}W=|k*?sdxHO(pi;$U(X9a?NcGhDhpKhN}ny^scEaZY3mvwI~Pi;
+zzg%e>=Nk6fT(`K)Od(V!7U<0}_Wx*kR7#I<@dH?{GL)`YOqkPaP?P$6-|(6B-0tp;
+zF16cnv<aWpVd3C;Cy4ETnPy6;w0l}g|8jWgH2zFyK*8w?JB9O%Er&s4#{vFNKKC8_
+z)hazaSbI)wZ(ZIOvLFvkBRLH}2c>fEhMUGxy2ubJQjrq(=tWv<{fV&TCTB;Fq8N7Q
+zM&Ooyb<I0@+drk*QtD!m!89BuKWFwWDTR#pMiagSM5g_juM&BMY0%GEauyh;;N93W
+z+?z_f?Vn0hJjZQMs!iANGYWd+yTC&!goE4HY0Eab-rb3pZOrQtvC>aho_Pp&9wz4m
+z$daKn+|~EpubFn_P`>}PqUtVS+FV-q0HpceyJ>u#W0RF7|H(gcQquh$_kOhR7FSsZ
+z{&vz_fFZb;2XFS7xCQ=uTmPR*?}Im9`J}BEPYf?=maUY1D0}HvQylLxURn+R(pwq+
+z5^rLtT!-4O@}M%Sd-e!cXE`D(Zz)!_t2=X{iIx64CZIFmv8bY;pa1gSQc^<G=e!S+
+zEt|HkAMMZ025P@k@qeLg7Mk>OBNkJ2=nieJQpTxZZ>ivAK%*Am+ajvBio^8q&~!w-
+zEQk!QOFbkQt@vE#M)SBZ!?#-@uts~9=Fw&_Z$$E?qpZa6=&Iacj`7q=rGDme%}K)m
+zAC$|>A+7}rw5Iu8M9B=}8D+#9rQMtymrBj7%JIA{J(3;~hk%iM!w{=yjM?BYZ>geY
+zrnvi7t}Tpl)Oh$ZNeZ=yl?QAlTAJsXSAa;rMeX+nQpYE5H&7aZDtX$@`ZX=tqo(XF
+zTiPcSw>J5Sj5U|{a&+sP#Whrmeh&byPW$X_{6yCi%Eq2_h~Bz{!p4UKdHmfw%cHxM
+zC@z<Mq2D^jBv?%zai{|&qibnKXc6={ydsQ*<gbq<sFiHDxF(3b8YYy_%y4}0RLg(Q
+z)>z`d8~u*lv|w^A`dK<Mo{|VKZ|P++b<|%Wx6t$?sEfxWSyYJwD(V*>4jF?g+Dqgk
+z4JLl;6em3Mu-POXN=wLCej<zIFkhua))~vgW!Z39<e(cqa6RQ<-S{;pt9axoZtAte
+zrMAKI^;H!*qim72mHBKs*K8wx>Jc_m17qL)5zJegf(+Nz6WZ)8%@y69raE7H`6Mf=
+z&{>(p`J0vnsnZBZfq?S@y!p4fe6atbFn<>Rb=HxZ$)6ZzYYL7pS^RDLA{-o^dz^iI
+zS()($ymcGfLcXh-vko-g={p=t*KQSzHqYO)%Dv>uymQn_8lAS;IEy=b?K{vOVN@|d
+zT$sAQkbHcFxbgO)W1GK-<AHNOvZ2~GnX749w-u4YP47NTE_X_v-faIg;bm|+kqj%f
+zh=51+W)JEKKlxzhd~B>NQ2TXBi6dy}rjNr(!%>T`R_OuY)>MtoNp;+h-ugoQDQY0b
+zdBeBI)IXf1v)Dmr_DeFhrYiiSgO9M#P7PmkENgwbrGQX#X@$s0rqFgUbxS~aH{-%4
+zQC$;=XC%vaa$uAHWK>K|-RR4lKGxEf#pkf!n)<2V(Hr08`N<Fj8!zt|($a=A)~0+O
+ziW6C{Yv{~VVi{e6{Cr=j-@XM4{dK0WcAC?yZ8^9N-~Yj<LzO;(R8ee@y-tVa%j*0s
+z(i!GQCgkghe4B^K+O#<DF@Iwbf|?VAPWVfyL{f!I49i)+Sw@vMd+sO}?eQtU_L^x*
+z)(fKu@a!-GQ)q$z@{g#$92M1+Mf73y*OkF|Dgw-b9Xls7yG2=%=@P<z&8qO><-F^}
+zAUCxLS9RtE;n&e6)v7*xV{gVAMeJ4Z9#=mA{rHFck2M?%;p;5o@0oRtcha_Wb3R^S
+zo&K1n{l(82I^eXYPpjNTnQqeKmtT!N;fM=oOrc<KZE+Mlsqp%8rJ2*$w9fhf5YD`-
+z*&P<!?}sc~d)~_0$1a!T3*(9Zv9)-=cA9^yzZrRqeV1R8^FnMt=f}iJ#j{C&CGxNk
+z-ZU<ON=$Q`jTyEI?W(vKmFHBYJ6o@^Yefa9=*EqmtO9t9z3Ak>9_R7)_cHWU>ZfB)
+z!JqACYFVZ<??+Tn=7Hsw9{{7dt3d`4ov%+g9k}~RS+h#?-+wHK&WP;I@R7;0rhl}|
+z)-}$eu+_`kwn+8Hg{iJn?P5Kp;4li)*n!1NT7;2$AaTCLJPOqYG>-nGwb>5pr{K-+
+zQH}mAtn2VaJc{bm=D0xqsqIiB)-~UGR_ReeUA}u2rOAdftci$jHt%@K*oCIng3$b3
+zbN}D76UW8f=c2;l6c<i?`)8;Fru-H(wIg=3yUn7KY(+z(E1Z#7gPW}!RWIyzW*ZHU
+z)>IOvXT~+RCjx<>{nlqPlLrwK<yjjFW05hBB8Mrt7!OujYj}NB@SNXW$f%_-bY8@p
+zKch@7?zcWz=gDxh_;q~zDXFMn4m(Z2DV+Anxky@^hFFzHy9kSj97XMDr0umo?)F`V
+zK+znSnW&CjJRqpg_fe;WbZPm9-SQk?09m1}fZe{umBzKav<A0Z5`Xj6a(<SyG`&Tm
+z|H9X$mu&1Q3&9o5CG)(=@0TtMh!yDMwmL>C6#~L&Jnkv#{P%G=Muk~~bY!PM6~qm@
+zVReJvd7p}@DmTw(lpTMpNpf=^yq@ofBR@Xb4Xv?Tou~IP)J$^t;-Sdk;>j-mvLdoR
+zqO13!GXO1pN!~)9C7vcO2i9;QzTDcZbf0uruI<(ZpmR?7diy|RZ{j&ni9f%E+^a9%
+zA3p#{2Z-%&I0*y+qk&NV8%_cd07%~lxq%9XzRRoWIYxRsQyVao6X*XskR(p`0E{Ns
+z(i0tarSAiXGB>f+&t6|MMsM9PTCWP{+R&bhPqB#3iAc#<PBs)%YMrYT`>PcCD;JY&
+zobC2rAGcz>3+?8o#8T-dJXANDT1-lJ>i!+|VN4A-xH2ta4f4EK>=i0k0thsa?5P)u
+zLL@=$OlI)J=3w`jDf&hjAHQmyTt5Vbe+!&icE~RJj$71%#>}ljav$n!HthOQ*=*Jv
+zY1v7Q*tBF?!ZFZhH;F%@2pPy<m`H$D$D}r;j5Y%jh#E7nT+JBv+&Ef`E~F3<2nGo}
+z$r*W`yklUt8Ls}M!qYX=C=a4X-abUOyWgp5afi^892+REq<5cBUltF4TMu25n+mS_
+z`DtGq`vfG*oW~QU#vzx_cJbl0D-9kHPWcnMfnlDsadF$-kzUf;Cz%;etAPK;{g>1?
+zDMIbji1tvw=v}BQCdczZyb1&}(Z_dzo2J2|cOy}TDG;l>P;zD?wQ~{as4z18x0jIU
+z@}k#NSN?|ZzEFgiohQNClO_<Z3;OgKH!kj+@`rHR4K!f|9278HR(ivn^(d8%h^2U}
+zm_v}otv5zU!SOmf>732oA0m*C@zGY;dI*28Hvv74X7C$B9F~meEPt)HE0YxO^j^{B
+zM31Aho4yAzJhrPv_#|Ui6iL<-^}Usw(cYD3)cjtECGPzId?RGWwDuT-VzA)!IiLWO
+zn1;ilm+S&`QR86PdnpBxQ8C_+zSvP1sx-UNa->-={s{lfFHU61O1`1(<;8kxjccz7
+zYZ#`8QX{~LXp_QFj25~}OsXcfn!i^McH)c%<e<(9Yx0x{k>cU-yo=zd{16fG32s~H
+zcO2#7oj_jHWJ)4*PJN>uiJ??$!}g%9&<iVWJH+Y-6zfHv1R<ZvGvksYd=;q|CbvP+
+z94Jz1{qrNPO{uUf3Q>B96ISw&@u~b6S9qc&jWvu4!0%;*sG=qbVuDS|Y+YZZ%~6w`
+z;*OIJUtyhPecQ$cH6PEh6l?}9-9rs>1)dR+Gm1}B$pC>d-Od#ZZ@!#I2%oW*SjOZ(
+zdA}a_xZByxS%TtLuD6ZrDq<|%8^53Tc_5+(z^#>=3gP0*?%xMemied)fC@US?f}Vd
+z)&>nhu4PR`WUv&RnCUr9KJf`Eg;jD-Ji!lD1VS)ixy5}hDL4EVK|O*4xN1S4z;Th1
+z)|dUMS>(cgQAaodh^&W2vG+hT!kf3R`{|ybEsXbB?lN2QPYuM4;Z?IdVjU($bcce7
+zwP%bbGrpEhsy62_zHuxg$J#bI#4g!=yJQDVaA9f9*i!E<W=<rH{P<1kE`O&=0!>bF
+zp*IXc`v^bOI2O`Sf9@m2#{##v@ssY=QIfnbj%XK}hSz%FzVJH7ip`q04(blmK56|K
+zrU@Z1iUPiB8NSFOlx`vj#b6@IJUgb1;hfyBE3W?uCgF)gaTnssQ}BRAQ3UD^p+l$p
+zo5v}XMTjYqdNDgf<fX-P*ZB+i-A^>zH;2)u9Vn0Agybz_=<uiOM(>J!0sEN4m7-jW
+zX?NBK5+lA<EQZnbUNIP`p>VR_uHz+P(^FJF&R^#0?i(lNWf(sEflf#X4>d!>?QL<A
+zxnzO%iLO1xf!z0TlEcOVVwF(K5t0LuRM|CWu1&KNCFGQw(?1lj^|LUmoTCYE`<|?0
+z@bI>R{Ca7%`N)I~3d^QuS%*j2U!VtTm@`6t0nz9sx;h8n#7T|w9J?#@IlgmEv>a0j
+zr`Cqn$rj7u%CKytRnAFH(c{4Ttt0klr3QTwQ=#F@a1s)+{ErPJq(LMw?Vt0x>jOz5
+zpL^MpN1<KV@sF5-30%3!>0Ag+6<6i!$?d-h(}@Pq5jqrXiWn3^9CNRUtHR|vu2Mn{
+zwXK@X@UY^J{Zfkohf^8YF5Rv*`^=%79k=N49d<8IpEKchcT{kg7a|dxI39z|x(7`M
+zpS<F#43r?1fg6UywDkO!0I$_$-?XzDeW>YEm0TJ(?<D>=s}4etWQluAx!~0n1#k1S
+zo=ot5RXrXacKq0~ODy`65bYFHw7%{@wl1T(PGRnn(BWmqPE%Vewu?JNP*La|8wKrK
+zq@nniJN%cDg<`<E0bm%wfWiPQ7&4g%NRa~)7ytr*NdQ17GG~h{`o7fwm;?g?cqp)7
+z8~|DVk0e5HkiVII8)gpTFMdJs7o_lp9IF9<O9Gkn0JxBK#%v%nG{!<}W=32ts3JKW
+z0~UfT#SlcEkSPxc7#55~$OH-wtQ!MB!+?SRrnmtps?!rubvScHx4CM%d7j@Q?C~}X
+z0L&$jb#DO(ZWvj+o?K!F*Uh`==#se)yIRQJpa6=*TL1)fW55vqIziw7!AJl?4ue?2
+z83XxO0Qh%z<ODIex&bJ1B!BZWIQU2_%R+!mz#!w5sHn(c{iFX{S=e7Q%k?g=N1|qG
+z<5>0NpN;(+sf2Ed)P;QuOxN{Uw#FTskK--w*jKC!?wo@=HujP^%-Ftv|5igiG^xjC
+zUTJZ_5->efM3IdBN*Dh}=-7XEGjcDE>g)GR!NQcuJK8riy@TPy)0V4yl1Uc1_KvN4
+zBu8DYZ%4P8;uYECl{a+K=MgXMJ<bQjiRnl8Un!r%oSE9p)CbR>zUX1kz!{(Ai=khN
+z`R!36f{+;DsT6gQAwp?#c}_L?+zHEm<g0#8@JlAN_f>~d<fI@=iy%k;{m*aEELTpO
+zR+lS(=4rUWle)&|+GbB{I4j#G!1THCdcU(FpXr=5)?EAQX)q|l-Id;d$mw8qbD^hO
+zSP<QNG^~(59>~l^!Pxig^3RbPu#^=a>+e>ws0OVt@R)eSgQ884R+5@-ZC`GtiYgJB
+z^14mDlG#HrN=I!$@VtbJhbgRW{-tR_UNaN$Y93F~$N0&MSq#R`sk2wN^}m#dx{Q*&
+zUZWgQ2|obBGx*>c=DKW+#iv?nqX}m~M3}&fC|Sl#X?_r|v_ZZFkQ&THr%3b-#13|@
+zP4lBk4vaFzct7ucsL%s9qgz=mOd!OvXXAoi?5VO8Rj1u4C%u$mF^avJ%oBN8t|;Lx
+z_{vJ3P~rn5c`N!<H<kF!W6O6hUqs+SnO-X=OZ%qBG65jfADU6qNzn1Ra(+zeeHmxd
+z=to0h$uFV_85tBi<%CI6FNVh)T8T9g)uu!n_YGvo)ZbV@eOH4F#~C@sUdH_!&130u
+zukXq1GoB2Uqr?mJ3jMPC%(+sS{)bN2D%ia~W~EQ{d{l^f@8~u)HeEzGBas}*jO56_
+zkuP+lnEaO`0Rp7o2jfyRg-W;}V_iK{c^m(UZ2gT)LQDOBymjtGXE1u?{d$?71l6|u
+ztAfYVwU{(nz1j4)!b2s-6(XJt7!mPivio10o&`Otij^@n<clJq>MqdAyX6z5eFdao
+z>5JZde{Ry`MK~F56sh>mg3n~H%X+OD_2N%P0l0JFngje%Y}|81Mf$$vT`=}Rg`Wu)
+zE9%{Zq@ennaqD`r{XKpTUEH>sqA_Ff@dqH<H?{8UzCDRmQOD8mE23bm>Jo~Rez{Ci
+zT<7w9=7m>(#d=Ryy<IEX&qIRjL%{{~{>kr-H?@6(V9zKmv>#TR?4LY7+T_J9Uu5pH
+zbTVlWH3WY7IKoU`J3~`wX|nGufkT6yJa6~en=_L=ilDHDoy#IaX;ucIHTIHl`faBE
+z5wUBVS8zpy6TKF6)Ifp#cHfX0jN|T@pM*J^02*aEBQCXMN`a1X?4)ok?g^9>jbW!6
+z_Vimy4cEFjgwaycf5i?vLFqti?Jb{D8wWoQS!ww&wf)Ja$7`r6cxO@itrXWc_=x}C
+zKqV^_xn4*|{qLJ5|Is0!f9nNRbKx=#hP}&^P^~#O>6tp&_<!7V=pDn{0{{+qvhORN
+z7vv~zgWp=Oau-J4CabAS?xS25%cT)XTjoKj<u<<K`{mcTIzy_FoJjv$G^|F$W7|!e
+z?hE4P!k(hm?2#eKSB)ae?s%G?wc=FFwDRV)9!*a8k|z?g&}f>j9F*`GOY~i%nw*Mm
+ztQe}8mf^2qdRynN4{IhU5DHyfh2pnl-XA1=qhmC}NNUV$aM1qklv`5v!%Dlm@!S`m
+zu|Ga#o2@K@^k^5_Qe_hPbpAFMXH&{?XdU&3Vye-b56S7PXCCNaL9>8zepy-!ik1B|
+zQ@-m2z_<-9;15+#GurZbBEi*@i+~@91n1i+4)j+BtOL>$X4S&E;~oS|P|bG`pY3cb
+z%Q_QS!<a5p0d%dZntURz!h2SJFcVNLdrmMzk5Jv!A%dv8jg@~(NHe6|yQe5#Bnqez
+zE)0~3J|B=Eb-rV|IeIZ*a(8f*n&0h*T6g+;bmdXwQ`@-&%(NIyN5Q(HkTFRH+zj1q
+z?m(^OnmsdDInWi4LxjWA&0YmQ(xv6J)2QxE+vP7&YD}6N%IOU?7Ogf6gi9NXiNlwM
+zMMe>Q!Tx#p<@FX4v`{>A2;y<Zow1KnLvggZxJW76b}Sn~xABIrvy1r}^2L|fkH_i~
+zZe@lxD2@$Z1v3e=h!t1i)TNokqaFF|74pkoJCj2t%y?36;5S1%=o=&an98_6(3Sn%
+z?vh%*ridUc_Io?!bq%@&A;x<%O!RHi_s^p(e-G2fJ4W`tk}(o~?v&m`DNFNnJN$}@
+zL70S$U&3_^tz*34vX)=!dwX}87Jvn@ER7Pb>)x@K8vwa$@1E9vJL>c&Po~7$hzbRj
+zu{#a)$U`t)8lzy!F>bE=e9>_TZx5&`{mh>b3pQJUF(HdK9q&*I_T!l7Q&h#=3fx%i
+zMa-TuF9tunh~Lb%x(662-Po<nasp9e2ao0J0Wpqs>aj}tg=0)esm7$)o>F4+z4L0D
+z4r|n$wy=iX&C83W1ksrKHBoAGQ!)nWh=nqG-RLj{lxA$~Kch8w+j5d0vSWVbxbVal
+zp|;)p7BUUgPjP`_mH3*+zX1@$&1LF8rd=&xloe5+Ar8*RF1}Vi09>ngqIYP$6~wNF
+zh+wLha$Px_tWQ1!D1Wi8^*}+dJ-*}pg}ALCUq!7{;Ho*@aS))6?*$Mv(d{gH7e+#P
+zdJ6=O5XBs4vB*9CmKFwpC_a~QnMoQaKvOc3T?-{a)$<s)AUE#J{2t?U)~DbRp5^+$
+z%K@6yI`=ixZRj6ls^5V3X>k88S0}H%)X}@xpp8##)ahl-0xY-bkKe{v|1NRWIr{2t
+zGiQkRqtKDF?i|JQ$d>rBHJPykpzyDy8_2&zWRYscU22N$``o_z@|Kdl=e;R0vrUnQ
+z%K{2vv{^Tlw%*~Hfu^>J<S7ld0ox2qa>paA!0&2;k982UmaG_{l^!aS2**&>a0yvv
+z*fvI$^{Bp}Ow~YI{i8BD)=L#AZXHp{PPQGtlbG$e*b1hQ)-RrcH8$C|+!dTB=IM2>
+z8_Trn8(Fqt@(+L+bD~Tez`-?zY98m|`T!i4pFx74sod@BT!R^DQ_FhRzZKe8NoHTY
+zp(t8U{0ujGd5+Qs&3hX10Mrr_w#RB(rq0i#3;0mB%SYUZ`bpqPX)$P7aS*@kd>WKT
+zo!?B?$?loD6K<&K<eEBiJv~)8nBB0P`=<w0`pkf~-PSB+LYNd|WW1?1<`pmd6*33k
+z7iGArMIe>?YP>YB;*&H@R(9x&d{L18W&ToQaCJgi>SeRU>vh8@ufTJYAm|fzI9DxF
+zjygz{Ww-6^xZMwO$@o^ENhIAm4*P~kOtl8W3!fIkl}_C`;*!>K@gwe;8eg5d{Eqxu
+z!X>`)+iXS~OZo~mf<n`i>JCPdFtOp}iyEcXxZOoR@RH)~w_<%g<6V*K50bmgm^2T7
+z3wrS_W>G}-S8g)7!E!O~k5f#WJ8MMvp{!yWIo8Hel~pUT?pNM$Q+(aV9&FCt#A=d{
+zG9J(wN-c$ske-jzMAsqGZzN93sy%VQcM*}S<Pw(;z<$yp@m{sR$r?;F_3h^BHvv`t
+zda__9A6;GW<QoM*mW>h1Jw?(`*Y*6DufC}8O-7hXy*pjuMr4h%+V5(Mwv&~n1UO*|
+zwb{>loF^zkJ8%%3)*9z^yDt}8OU1M;Tyz-doHgcT)Mgn>7lSktr5J>t%T$7f5ncVK
+zQ!?-|1EwPehCk@|!*WUtndbGF&XKF$SO(?qw=`mnh%2t{zw$||h<~?d3_v^ZC~Ed;
+z(jGF$n?k<&vmVIDIp&f}P;KYhuG$SgN4~4|=(}AN3jN1pg8Kub4e^6usTk6GdU|0(
+z!=2C+0EgT2(x-SV7tQSfP`(_W*yN|UF3sTNPrEkKy&z~SJ5wetCNS&yg@H9Bjazk0
+z3f~X}<$j~v%?prTr;k*$FY-nK=p{^Aq}PK)R|}th95VY^BHFeKH{+atc5Ou^e{;7r
+z)w7&q(j%;n2tZf*@{-}=YvE0=#+$R27WF1&Xo8h<xn{i1CEAaog1yeB+s{9W$}2Cr
+Lj<w1^J}muTzG2DF
+
+diff --git a/frontend/src/features/audits/request-audits-api.ts b/frontend/src/features/audits/request-audits-api.ts
+index bafceb1c..d3c1da98 100644
+--- a/frontend/src/features/audits/request-audits-api.ts
++++ b/frontend/src/features/audits/request-audits-api.ts
+@@ -35,7 +35,7 @@ export type AuditDTO = {
+   provider: "grok_build" | "grok_web" | "grok_console";
+   operation: "responses" | "compaction" | "chat" | "messages" | "image" | "image_edit" | "video" | "tts" | "stt" | "realtime" | "voice";
+   usageSource: "upstream" | "estimated" | "none";
+-  reasoningEffort?: "auto" | "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "fixed";
++  reasoningEffort?: "auto" | "none" | "low" | "medium" | "high" | "xhigh" | "fixed";
+   accountId?: string;
+   accountName?: string;
+   egressNodeId?: string;
+@@ -147,7 +147,7 @@ const auditValidator = hasShape({
+   id: isString, requestId: isString, clientKeyId: isString, clientKeyName: isOptional(isString), clientIp: isOptional(isString), modelRouteId: isString,
+   modelPublicId: isOptional(isString), modelUpstreamModel: isOptional(isString), provider: isOneOf("grok_build", "grok_web", "grok_console"),
+   operation: isOneOf("responses", "compaction", "chat", "messages", "image", "image_edit", "video", "tts", "stt", "realtime", "voice"), usageSource: isOneOf("upstream", "estimated", "none"),
+-  reasoningEffort: isOptional(isOneOf("auto", "none", "minimal", "low", "medium", "high", "xhigh", "max", "fixed")),
++  reasoningEffort: isOptional(isOneOf("auto", "none", "low", "medium", "high", "xhigh", "fixed")),
+   accountId: isOptional(isString), accountName: isOptional(isString),
+   egressNodeId: isOptional(isString), egressNodeName: isOptional(isString),
+   egressScope: isOptional(isOneOf("grok_build", "grok_web", "grok_console", "grok_web_asset", "grok_console_asset")), egressMode: isOptional(isOneOf("direct", "proxy")),
+diff --git a/frontend/src/features/audits/request-audits-page.tsx b/frontend/src/features/audits/request-audits-page.tsx
+index 9c6eb1a1..7b2b0ab7 100644
+--- a/frontend/src/features/audits/request-audits-page.tsx
++++ b/frontend/src/features/audits/request-audits-page.tsx
+@@ -667,12 +667,10 @@ function UsageMetric({ label, value, reasoningEffort }: {
+ function reasoningEffortTone(effort: NonNullable<AuditDTO["reasoningEffort"]>): string {
+   switch (effort) {
+     case "none": return "text-muted-foreground";
+-    case "minimal": return "text-teal-600 dark:text-teal-400";
+     case "low": return "text-sky-600 dark:text-sky-400";
+     case "medium": return "text-amber-600 dark:text-amber-400";
+     case "high": return "text-orange-600 dark:text-orange-400";
+     case "xhigh": return "text-rose-600 dark:text-rose-400";
+-    case "max": return "text-fuchsia-600 dark:text-fuchsia-400";
+     case "auto": return "text-violet-600 dark:text-violet-400";
+     case "fixed": return "text-indigo-600 dark:text-indigo-400";
+   }
+diff --git a/frontend/src/features/models/models-page.tsx b/frontend/src/features/models/models-page.tsx
+index a8e9288e..ee2c5476 100644
+--- a/frontend/src/features/models/models-page.tsx
++++ b/frontend/src/features/models/models-page.tsx
+@@ -69,7 +69,7 @@ export function ModelsPage() {
+   const selectedProvider = useWatch({ control: form.control, name: "provider" });
+   const selectedCapability = useWatch({ control: form.control, name: "capability" });
+   const bindingMode = useWatch({ control: form.control, name: "bindingMode" });
+-  const selectedAccountIDs = useWatch({ control: form.control, name: "accountIds" });
++  const selectedAccountIDs = useWatch({ control: form.control, name: "accountIds" }) ?? [];
+ 
+   const modelsQuery = useQuery({
+     queryKey: ["models", "grouped", page, pageSize, debouncedSearch, statusFilter, providerFilter, sort.field, sort.order],
+@@ -188,6 +188,19 @@ export function ModelsPage() {
+   const visibleAccountOptions = normalizedAccountSearch
+     ? accountOptions.filter((account) => account.name.toLocaleLowerCase().includes(normalizedAccountSearch) || account.id.includes(normalizedAccountSearch))
+     : accountOptions;
++  const visibleAccountIDs = visibleAccountOptions.map((account) => account.id);
++  const selectedVisibleAccountCount = visibleAccountIDs.filter((id) => selectedAccountIDs.includes(id)).length;
++  const allVisibleAccountsSelected = visibleAccountIDs.length > 0 && selectedVisibleAccountCount === visibleAccountIDs.length;
++
++  function toggleVisibleAccounts(checked: boolean): void {
++    const current = form.getValues("accountIds");
++    if (checked) {
++      form.setValue("accountIds", [...new Set([...current, ...visibleAccountIDs])], { shouldValidate: true });
++      return;
++    }
++    const visible = new Set(visibleAccountIDs);
++    form.setValue("accountIds", current.filter((id) => !visible.has(id)), { shouldValidate: true });
++  }
+ 
+   const result = useMemo(() => modelsQuery.data ? { ...modelsQuery.data, items: modelsQuery.data.items.map((group) => newModelRouteGroup(group, t)) } : undefined, [modelsQuery.data, t]);
+   const pageIDs = result?.items.flatMap((group) => group.routes.map((route) => route.id)) ?? [];
+@@ -388,6 +401,13 @@ export function ModelsPage() {
+                         {accountOptionsQuery.isPending ? <div className="flex min-h-20 items-center justify-center"><Spinner /></div> : null}
+                         {accountOptionsQuery.isError ? <p className="p-3 text-center text-xs text-destructive">{accountOptionsQuery.error.message}</p> : null}
+                         {!accountOptionsQuery.isPending && visibleAccountOptions.length === 0 ? <p className="p-3 text-center text-xs text-muted-foreground">{t("models.noBindableAccounts")}</p> : null}
++                        {visibleAccountOptions.length > 0 ? (
++                          <label htmlFor="model-account-select-all" className={cn("sticky top-0 z-10 flex h-8 cursor-pointer items-center gap-2.5 rounded-md bg-background/90 px-2 text-xs backdrop-blur-sm transition-colors hover:bg-accent/40", allVisibleAccountsSelected && "bg-accent/55")}>
++                            <Checkbox id="model-account-select-all" checked={allVisibleAccountsSelected ? true : selectedVisibleAccountCount > 0 ? "indeterminate" : false} onCheckedChange={(value) => toggleVisibleAccounts(value === true)} aria-label={normalizedAccountSearch ? t("models.selectVisibleAccounts") : t("models.selectAllAccounts")} />
++                            <span className="min-w-0 flex-1 truncate">{normalizedAccountSearch ? t("models.selectVisibleAccounts") : t("models.selectAllAccounts")}</span>
++                            <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{selectedVisibleAccountCount}/{visibleAccountOptions.length}</span>
++                          </label>
++                        ) : null}
+                         {visibleAccountOptions.map((account) => {
+                           const controlId = `model-account-${account.id}`;
+                           const checked = selectedAccountIDs.includes(account.id);
+diff --git a/frontend/src/shared/i18n/index.ts b/frontend/src/shared/i18n/index.ts
+index b31d7146..4e8eaaef 100644
+--- a/frontend/src/shared/i18n/index.ts
++++ b/frontend/src/shared/i18n/index.ts
+@@ -2108,6 +2108,8 @@ Object.assign(resources["zh-CN"].translation.models as unknown as Record<string,
+   editCapability: "缂栬緫 {{capability}}",
+   deleteGroupDescription: "杩欏皢鍒犻櫎 {{name}} 鐨勫叏閮?{{count}} 椤规帴鍙ｈ兘鍔涘強鍏跺鎴风瀵嗛挜鏉冮檺銆傚悗缁洰褰曞悓姝ュ彲鑳介噸鏂板垱寤轰粛鍙椾笂娓告敮鎸佺殑鑳藉姏銆?,
+   bindAccountsDescription: "寮€鍚悗浠呴€氳繃鎸囧畾璐﹀彿璺敱锛涘叧闂悗鐢卞搴?Provider 鐨勫彲鐢ㄨ处鍙锋睜鑷姩璋冨害銆侰onsole 鍐呯疆妯″瀷鏃犻渶閫愯处鍙风‖缁戝畾銆?,
++  selectAllAccounts: "鍏ㄩ€夎处鍙?,
++  selectVisibleAccounts: "鍏ㄩ€夊綋鍓嶆悳绱㈢粨鏋?,
+ });
+ Object.assign(resources.en.translation.models as unknown as Record<string, string>, {
+   capability: "Endpoint capability",
+@@ -2127,6 +2129,8 @@ Object.assign(resources.en.translation.models as unknown as Record<string, strin
+   editCapability: "Edit {{capability}}",
+   deleteGroupDescription: "This removes all {{count}} endpoint capabilities for {{name}} and their client-key permissions. A later catalog sync may recreate capabilities that the upstream still supports.",
+   bindAccountsDescription: "When enabled, route only through the selected accounts. Otherwise, schedule from the provider's eligible account pool automatically. Built-in Console models do not require per-account bindings.",
++  selectAllAccounts: "Select all accounts",
++  selectVisibleAccounts: "Select all matching accounts",
+ });
+ 
+ // Kept separate from the legacy one-line settings resources so proxy
+diff --git a/patches/README.md b/patches/README.md
+new file mode 100644
+index 00000000..5a870b32
+--- /dev/null
++++ b/patches/README.md
+@@ -0,0 +1,4 @@
++杩欎釜鐩綍瀛樻斁鐩稿鍘熶綔鑰呬粨搴撶殑鏈湴浜屽紑琛ヤ竵澶囦唤銆?+
++- 鍒濆鍖栨垨鎵嬪姩鎵ц `.\sync-upstream.cmd -SavePatch` 鏃讹紝浼氱敓鎴?`local-customizations.patch`
++- 鍚堝苟鍘熶綔鑰呮洿鏂板墠鐨勫浠藉湪 `.local-fork/backups/`锛堜笉杩?git锛?diff --git a/scripts/sync-upstream.ps1 b/scripts/sync-upstream.ps1
+new file mode 100644
+index 00000000..c02da692
+--- /dev/null
++++ b/scripts/sync-upstream.ps1
+@@ -0,0 +1,316 @@
++锘? 浠庡師浣滆€?chenyme/grok2api 鎷夊彇鏇存柊锛屽苟灏介噺淇濈暀鏈湴浜屽紑淇敼銆?+# 鐢ㄦ硶锛?+#   .\sync-upstream.cmd
++#   .\sync-upstream.cmd -Init
++#   .\sync-upstream.cmd -Status
++#   .\sync-upstream.cmd -SavePatch
++#   .\sync-upstream.cmd -DryRun
++
++[CmdletBinding()]
++param(
++    [switch]$Init,
++    [switch]$Status,
++    [switch]$SavePatch,
++    [switch]$DryRun,
++    [string]$UpstreamUrl = "https://github.com/chenyme/grok2api.git"
++)
++
++$ErrorActionPreference = "Stop"
++
++function Write-Step([string]$Message) {
++    Write-Host ""
++    Write-Host "==> $Message" -ForegroundColor Cyan
++}
++
++function Write-Hint([string]$Message) {
++    Write-Host $Message -ForegroundColor DarkGray
++}
++
++function Assert-Git {
++    $git = Get-Command git -ErrorAction SilentlyContinue
++    if (-not $git) {
++        throw "鏈壘鍒?git銆傝鍏堝畨瑁?Git for Windows锛歨ttps://git-scm.com/download/win"
++    }
++}
++
++function Get-RepoRoot {
++    if ($PSScriptRoot) {
++        return (Split-Path -Parent $PSScriptRoot)
++    }
++    return (Get-Location).Path
++}
++
++function Invoke-Git {
++    param(
++        [Parameter(Mandatory = $true)]
++        [string[]]$GitArgs,
++        [switch]$AllowFail
++    )
++    $previousErrorAction = $ErrorActionPreference
++    $ErrorActionPreference = "Continue"
++    $output = & git @GitArgs 2>&1
++    $code = $LASTEXITCODE
++    $ErrorActionPreference = $previousErrorAction
++    $text = ($output | ForEach-Object { "$_" }) -join "`n"
++    $script:LastGitExitCode = $code
++    if ($code -ne 0 -and -not $AllowFail) {
++        if ($text) { Write-Host $text }
++        throw ("git {0} 澶辫触锛岄€€鍑虹爜 {1}" -f ($GitArgs -join " "), $code)
++    }
++    return $text.Trim()
++}
++
++function Test-GitRepo([string]$Root) {
++    $inside = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--is-inside-work-tree") -AllowFail
++    return $inside -eq "true"
++}
++
++function Get-UpstreamBranch([string]$Root) {
++    $heads = Invoke-Git -GitArgs @("-C", $Root, "ls-remote", "--symref", "upstream", "HEAD") -AllowFail
++    if ($heads -match "refs/heads/([^\s]+)") {
++        return $Matches[1]
++    }
++    foreach ($name in @("main", "master")) {
++        $probe = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--verify", "upstream/$name") -AllowFail
++        if ($probe) { return $name }
++    }
++    throw "鏃犳硶璇嗗埆鍘熶綔鑰呴粯璁ゅ垎鏀紝璇锋鏌ョ綉缁滄垨 upstream 杩滅▼銆?
++}
++
++function Ensure-GitIdentity([string]$Root) {
++    $name = Invoke-Git -GitArgs @("-C", $Root, "config", "--get", "user.name") -AllowFail
++    $email = Invoke-Git -GitArgs @("-C", $Root, "config", "--get", "user.email") -AllowFail
++    if (-not $name) {
++        Invoke-Git -GitArgs @("-C", $Root, "config", "user.name", "local-fork") | Out-Null
++        Write-Hint "宸茶缃湰浠撳簱 git user.name = local-fork"
++    }
++    if (-not $email) {
++        Invoke-Git -GitArgs @("-C", $Root, "config", "user.email", "local-fork@grok2api.local") | Out-Null
++        Write-Hint "宸茶缃湰浠撳簱 git user.email = local-fork@grok2api.local"
++    }
++    Invoke-Git -GitArgs @("-C", $Root, "config", "core.autocrlf", "false") | Out-Null
++    Invoke-Git -GitArgs @("-C", $Root, "config", "core.eol", "lf") | Out-Null
++}
++
++function Save-LocalPatch {
++    param(
++        [string]$Root,
++        [string]$UpstreamRef,
++        [string]$Reason,
++        [switch]$UpdateTrackedPatch
++    )
++    $backupDir = Join-Path $Root ".local-fork\backups"
++    $patchDir = Join-Path $Root "patches"
++    New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
++    New-Item -ItemType Directory -Force -Path $patchDir | Out-Null
++
++    $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
++    $backupFile = Join-Path $backupDir ("local-" + $Reason + "-" + $stamp + ".patch")
++    $latestFile = Join-Path $patchDir "local-customizations.patch"
++
++    Invoke-Git -GitArgs @("-C", $Root, "add", "-A") | Out-Null
++    $body = Invoke-Git -GitArgs @("-C", $Root, "diff", "--binary", "--cached", $UpstreamRef) -AllowFail
++    Invoke-Git -GitArgs @("-C", $Root, "reset", "-q", "HEAD") | Out-Null
++
++    if (-not $body) {
++        Write-Hint "鐩稿 $UpstreamRef 娌℃湁鍙鍑虹殑鏈湴宸紓銆?
++        return $null
++    }
++
++    Set-Content -Path $backupFile -Value $body -Encoding UTF8
++    Write-Host ("宸插浠芥湰鍦版敼鍔細{0}" -f $backupFile)
++    if ($UpdateTrackedPatch) {
++        Set-Content -Path $latestFile -Value $body -Encoding UTF8
++        Write-Host ("鍚屾椂鏇存柊锛歿0}" -f $latestFile)
++        return $latestFile
++    }
++    return $backupFile
++}
++
++function Initialize-Fork([string]$Root) {
++    Write-Step "鍒濆鍖栦簩寮€浠撳簱"
++    Assert-Git
++    Set-Location $Root
++
++    if (-not (Test-GitRepo $Root)) {
++        Invoke-Git -GitArgs @("-C", $Root, "init") | Out-Null
++        Write-Host "宸叉墽琛?git init"
++    }
++    Ensure-GitIdentity $Root
++
++    $remotes = Invoke-Git -GitArgs @("-C", $Root, "remote") -AllowFail
++    if ($remotes -notmatch "(^|\n)upstream(\r)?$") {
++        Invoke-Git -GitArgs @("-C", $Root, "remote", "add", "upstream", $UpstreamUrl) | Out-Null
++        Write-Host "宸叉坊鍔?upstream = $UpstreamUrl"
++    } else {
++        Invoke-Git -GitArgs @("-C", $Root, "remote", "set-url", "upstream", $UpstreamUrl) | Out-Null
++        Write-Host "宸叉洿鏂?upstream = $UpstreamUrl"
++    }
++
++    Write-Step "鎻愪氦褰撳墠鏈湴浠ｇ爜蹇収"
++    $status = Invoke-Git -GitArgs @("-C", $Root, "status", "--porcelain") -AllowFail
++    $head = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--verify", "HEAD") -AllowFail
++    if (-not $head) {
++        Invoke-Git -GitArgs @("-C", $Root, "add", "-A") | Out-Null
++        Invoke-Git -GitArgs @("-C", $Root, "commit", "-m", "local: initial snapshot") | Out-Null
++        Invoke-Git -GitArgs @("-C", $Root, "branch", "-M", "main") | Out-Null
++        $head = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "HEAD")
++    } elseif ($status) {
++        Invoke-Git -GitArgs @("-C", $Root, "add", "-A") | Out-Null
++        Invoke-Git -GitArgs @("-C", $Root, "commit", "-m", "local: snapshot before attaching upstream") | Out-Null
++    }
++
++    Write-Step "鎷夊彇鍘熶綔鑰呬唬鐮?
++    $fetchText = Invoke-Git -GitArgs @("-C", $Root, "fetch", "upstream", "--tags", "--prune") -AllowFail
++    $fetchOk = $script:LastGitExitCode -eq 0
++    if (-not $fetchOk) {
++        if ($fetchText) { Write-Host $fetchText }
++        Write-Host "褰撳墠鐜杩炰笉涓?GitHub锛屾湰鍦板揩鐓у凡缁忎繚瀛樸€? -ForegroundColor Yellow
++        Write-Host "缃戠粶鍙敤鍚庡啀娆¤繍琛岋細 .\sync-upstream.cmd -Init"
++        Write-Host "濡傛灉 GitHub 琚锛屽彲鎹㈡垚闀滃儚锛屼緥濡傦細"
++        Write-Host '  .\sync-upstream.cmd -Init -UpstreamUrl https://gitclone.com/github.com/chenyme/grok2api.git'
++        return
++    }
++
++    $branch = Get-UpstreamBranch $Root
++    $upstreamRef = "upstream/$branch"
++    Write-Host ("鍘熶綔鑰呴粯璁ゅ垎鏀細$branch")
++
++    $currentBranch = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--abbrev-ref", "HEAD")
++    if ($currentBranch -eq "HEAD" -or -not $currentBranch) {
++        Invoke-Git -GitArgs @("-C", $Root, "branch", "-M", "main") | Out-Null
++        $currentBranch = "main"
++    }
++
++    $tree = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "HEAD^{tree}")
++    $upstreamCommit = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", $upstreamRef)
++    $parents = Invoke-Git -GitArgs @("-C", $Root, "rev-list", "--parents", "-n", "1", "HEAD")
++    $alreadyGrafted = $parents -match $upstreamCommit
++    if (-not $alreadyGrafted) {
++        Write-Step "鎶婂綋鍓嶆枃浠舵帴鍒板師浣滆€呭巻鍙插悗闈?
++        $message = "local: retain fork customizations on upstream $branch"
++        $newCommit = Invoke-Git -GitArgs @("-C", $Root, "commit-tree", $tree, "-p", $upstreamCommit, "-m", $message)
++        Invoke-Git -GitArgs @("-C", $Root, "reset", "--hard", $newCommit) | Out-Null
++        Write-Host "宸插皢鏈湴鏍戞帴鍒?$upstreamRef 涔嬩笂锛堝伐浣滃尯鏂囦欢鍐呭涓嶅彉锛?
++    } else {
++        Write-Hint "褰撳墠鎻愪氦宸茬粡鎺ュ湪鍘熶綔鑰呭巻鍙蹭笂锛岃烦杩囧珌鎺ャ€?
++    }
++
++    Save-LocalPatch -Root $Root -UpstreamRef $upstreamRef -Reason "init" -UpdateTrackedPatch | Out-Null
++    $leftover = Invoke-Git -GitArgs @("-C", $Root, "status", "--porcelain") -AllowFail
++    if ($leftover) {
++        Invoke-Git -GitArgs @("-C", $Root, "add", "-A") | Out-Null
++        Invoke-Git -GitArgs @("-C", $Root, "commit", "-m", "local: store customization patch backup") | Out-Null
++    }
++    Write-Host ""
++    Write-Host "鍒濆鍖栧畬鎴愩€備互鍚庡師浣滆€呮湁鏇存柊锛岀洿鎺ヨ繍琛?.\sync-upstream.cmd" -ForegroundColor Green
++}
++
++function Show-Status([string]$Root) {
++    Assert-Git
++    if (-not (Test-GitRepo $Root)) {
++        throw "杩樹笉鏄?git 浠撳簱銆傝鍏堣繍琛岋細.\sync-upstream.cmd -Init"
++    }
++    Write-Step "妫€鏌ュ師浣滆€呮洿鏂?
++    Invoke-Git -GitArgs @("-C", $Root, "fetch", "upstream", "--tags", "--prune") | Out-Null
++    $branch = Get-UpstreamBranch $Root
++    $aheadBehind = Invoke-Git -GitArgs @("-C", $Root, "rev-list", "--left-right", "--count", "HEAD...upstream/$branch") -AllowFail
++    $parts = @($aheadBehind -split "\s+")
++    $localOnly = 0
++    $behind = 0
++    if ($parts.Count -ge 2) {
++        $localOnly = [int]$parts[0]
++        $behind = [int]$parts[1]
++    }
++    $head = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--short", "HEAD")
++    $upstreamHead = Invoke-Git -GitArgs @("-C", $Root, "rev-parse", "--short", "upstream/$branch")
++    Write-Host ("褰撳墠鎻愪氦锛?head")
++    Write-Host ("鍘熶綔鑰?$branch锛?upstreamHead")
++    Write-Host ("浣犺繖杈圭嫭鏈夋彁浜わ細$localOnly")
++    Write-Host ("钀藉悗鍘熶綔鑰呮彁浜わ細$behind")
++    if ($behind -gt 0) {
++        Write-Host "鍙互杩愯 .\sync-upstream.cmd 鍚堝苟鍘熶綔鑰呮洿鏂般€? -ForegroundColor Yellow
++    } else {
++        Write-Host "宸茬粡璺熶笂鍘熶綔鑰呮渶鏂颁唬鐮併€? -ForegroundColor Green
++    }
++}
++
++function Merge-Upstream([string]$Root, [bool]$Dry) {
++    Assert-Git
++    if (-not (Test-GitRepo $Root)) {
++        throw "杩樹笉鏄?git 浠撳簱銆傝鍏堣繍琛岋細.\sync-upstream.cmd -Init"
++    }
++    Ensure-GitIdentity $Root
++    Set-Location $Root
++
++    $status = Invoke-Git -GitArgs @("-C", $Root, "status", "--porcelain")
++    if ($status) {
++        throw 'Working tree is dirty. Commit first: git add -A; git commit -m "local: wip"'
++    }
++
++    Write-Step "鎷夊彇鍘熶綔鑰呬唬鐮?
++    Invoke-Git -GitArgs @("-C", $Root, "fetch", "upstream", "--tags", "--prune") | Out-Null
++    $branch = Get-UpstreamBranch $Root
++    $upstreamRef = "upstream/$branch"
++
++    Save-LocalPatch -Root $Root -UpstreamRef $upstreamRef -Reason "pre-merge" | Out-Null
++
++    $behind = Invoke-Git -GitArgs @("-C", $Root, "rev-list", "--count", "HEAD..$upstreamRef")
++    if ($behind -eq "0") {
++        Write-Host "宸茬粡鏄師浣滆€呮渶鏂颁唬鐮侊紝鏃犻渶鍚堝苟銆? -ForegroundColor Green
++        return
++    }
++
++    Write-Host ("灏嗗悎骞跺師浣滆€?$branch 鐨?$behind 涓彁浜?)
++    if ($Dry) {
++        Write-Host "DryRun锛氭湭鎵ц merge銆? -ForegroundColor Yellow
++        Invoke-Git -GitArgs @("-C", $Root, "log", "--oneline", "HEAD..$upstreamRef") | Write-Host
++        return
++    }
++
++    Write-Step "鍚堝苟鍘熶綔鑰呮洿鏂?
++    $mergeOutput = Invoke-Git -GitArgs @("-C", $Root, "merge", "--no-edit", $upstreamRef) -AllowFail
++    if ($mergeOutput) { Write-Host $mergeOutput }
++
++    $unmerged = Invoke-Git -GitArgs @("-C", $Root, "diff", "--name-only", "--diff-filter=U") -AllowFail
++    if ($unmerged) {
++        Write-Host ""
++        Write-Host "鍚堝苟鏃跺嚭鐜板啿绐侊紝杩欎簺鏂囦欢闇€瑕佷綘鐪嬩竴鐪硷細" -ForegroundColor Yellow
++        $unmerged.Split("`n") | Where-Object { $_ } | ForEach-Object { Write-Host ("  - " + $_) }
++        Write-Host ""
++        Write-Host "澶勭悊姝ラ锛?
++        Write-Host "  1. Open the listed files and search for git conflict markers"
++        Write-Host "  2. Keep both your changes and upstream code, then delete the markers"
++        Write-Host "  3. git add ."
++        Write-Host '  4. git commit -m "local: resolve upstream merge"'
++        Write-Host "鍚堝苟鍓嶅浠藉湪 .local-fork/backups/"
++        throw "鍚堝苟鏈畬鎴愶紝璇峰厛瑙ｅ喅鍐茬獊銆?
++    }
++
++    Save-LocalPatch -Root $Root -UpstreamRef $upstreamRef -Reason "post-merge" | Out-Null
++    Write-Host ""
++    Write-Host "鍚堝苟瀹屾垚銆傝閲嶆柊鏋勫缓鍚庡啀鍚姩锛? -ForegroundColor Green
++    Write-Host "  docker compose up -d --build"
++}
++
++$root = Get-RepoRoot
++Set-Location $root
++
++if ($Init) {
++    Initialize-Fork $root
++    return
++}
++if ($Status) {
++    Show-Status $root
++    return
++}
++if ($SavePatch) {
++    Assert-Git
++    if (-not (Test-GitRepo $root)) { throw "杩樹笉鏄?git 浠撳簱銆傝鍏堣繍琛岋細.\sync-upstream.cmd -Init" }
++    Invoke-Git -GitArgs @("-C", $root, "fetch", "upstream", "--tags", "--prune") | Out-Null
++    $branch = Get-UpstreamBranch $root
++    Save-LocalPatch -Root $root -UpstreamRef "upstream/$branch" -Reason "manual" -UpdateTrackedPatch | Out-Null
++    return
++}
++
++Merge-Upstream -Root $root -Dry $DryRun
+diff --git a/sync-upstream.cmd b/sync-upstream.cmd
+new file mode 100644
+index 00000000..784681b1
+--- /dev/null
++++ b/sync-upstream.cmd
+@@ -0,0 +1,4 @@
++@echo off
++setlocal
++powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\sync-upstream.ps1" %*
++exit /b %ERRORLEVEL%
+diff --git a/tools/egress-quality-guard/quality_guard.py b/tools/egress-quality-guard/quality_guard.py
+old mode 100755
+new mode 100644

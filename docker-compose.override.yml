@@ -1,0 +1,9 @@
+# 二开本地覆盖：docker compose 会自动合并本文件。
+# 使用当前目录源码构建镜像，模型路由全选等本地修改才会进入运行中的服务。
+# 若只想用原作者官方镜像，删除或改名本文件即可。
+services:
+  grok2api:
+    image: grok2api:local
+    build:
+      context: .
+      dockerfile: Dockerfile
