@@ -89,7 +89,11 @@ func NewAdapter(cfg Config, cipher *security.Cipher) *Adapter {
 		conversationReasoningCache: conversation.NewReasoningCache(0, 0),
 		compaction:                 newGatewayCompactionCodec(cipher), logger: slog.Default(),
 	}
-	adapter.oauth = newOAuthClient(httpClient, func() string { return adapter.config().ClientVersion })
+	// Token refresh talks to auth.x.ai from the host's own IP. Sharing the
+	// inference HTTP client would send refresh through the assigned Build
+	// egress node after SetEgress, which can fail even when the container
+	// itself can reach the OAuth endpoint.
+	adapter.oauth = newOAuthClient(newBuildOAuthHTTPClient(), func() string { return adapter.config().ClientVersion })
 	return adapter
 }
 
@@ -99,6 +103,8 @@ func (a *Adapter) SetLogger(logger *slog.Logger) {
 	}
 }
 
+// SetEgress routes Build inference through the assigned egress node. OAuth
+// refresh keeps using the dedicated host-direct client created in NewAdapter.
 func (a *Adapter) SetEgress(manager *infraegress.Manager) {
 	if manager != nil {
 		a.http.Transport = &egressTransport{manager: manager, fallback: a.base}
@@ -212,6 +218,26 @@ func newBuildHTTPTransport(responseHeaderTimeout time.Duration) *http.Transport 
 		slog.Warn("build_http2_health_config_failed", "error", err)
 	}
 	return transport
+}
+
+// newBuildOAuthHTTPClient is the host-direct client for xAI OAuth. Proxy is
+// explicitly nil so neither grok2api egress nodes nor HTTP_PROXY/HTTPS_PROXY
+// intercept token refresh, device authorization, or refresh-token import.
+func newBuildOAuthHTTPClient() *http.Client {
+	transport := &http.Transport{
+		Proxy:                 nil,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          32,
+		MaxIdleConnsPerHost:   8,
+		IdleConnTimeout:       buildtransport.IdleConnTimeout,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ResponseHeaderTimeout: buildControlTimeout,
+		ExpectContinueTimeout: time.Second,
+	}
+	if _, err := buildtransport.ConfigureHTTP2Health(transport); err != nil {
+		slog.Warn("build_oauth_http2_health_config_failed", "error", err)
+	}
+	return &http.Client{Transport: transport}
 }
 
 func normalizeBuildResponseHeaderTimeout(value time.Duration) time.Duration {
@@ -942,8 +968,7 @@ func (a *Adapter) RefreshCredential(ctx context.Context, credential account.Cred
 	if strings.TrimSpace(refreshToken) == "" {
 		return provider.RefreshedCredential{}, &provider.CredentialRefreshError{Code: "missing_refresh_token", Message: "Refresh token is missing", Permanent: true}
 	}
-	refreshCtx := infraegress.WithCredential(ctx, credential)
-	tokens, err := a.oauth.refreshWithClientID(refreshCtx, refreshToken, credential.OIDCClientID)
+	tokens, err := a.oauth.refreshWithClientID(ctx, refreshToken, credential.OIDCClientID)
 	if err != nil {
 		return provider.RefreshedCredential{}, err
 	}

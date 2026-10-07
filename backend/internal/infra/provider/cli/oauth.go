@@ -30,6 +30,8 @@ var (
 	oauthSensitivePairPattern = regexp.MustCompile(`(?i)(access_token|refresh_token|id_token|token|authorization|cookie|secret|password|credential)=([^&\s"'<>]+)`)
 )
 
+// oauthClient talks to auth.x.ai. Production adapters give it a host-direct
+// HTTP client so token refresh does not inherit Build inference egress.
 type oauthClient struct {
 	http      *http.Client
 	clientID  string

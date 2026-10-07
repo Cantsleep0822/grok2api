@@ -4,11 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	accountapp "github.com/chenyme/grok2api/backend/internal/application/account"
-	accountdomain "github.com/chenyme/grok2api/backend/internal/domain/account"
-	"github.com/chenyme/grok2api/backend/internal/infra/persistence/relational"
-	"github.com/chenyme/grok2api/backend/internal/infra/provider"
-	"github.com/chenyme/grok2api/backend/internal/infra/security"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -16,7 +11,98 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	accountapp "github.com/chenyme/grok2api/backend/internal/application/account"
+	accountdomain "github.com/chenyme/grok2api/backend/internal/domain/account"
+	infraegress "github.com/chenyme/grok2api/backend/internal/infra/egress"
+	"github.com/chenyme/grok2api/backend/internal/infra/persistence/relational"
+	"github.com/chenyme/grok2api/backend/internal/infra/provider"
+	"github.com/chenyme/grok2api/backend/internal/infra/security"
 )
+
+func TestOAuthClientStaysHostDirectAfterSetEgress(t *testing.T) {
+	adapter := NewAdapter(Config{}, nil)
+	if adapter.oauth == nil || adapter.oauth.http == nil {
+		t.Fatal("oauth client was not initialized")
+	}
+	if adapter.oauth.http == adapter.http {
+		t.Fatal("oauth client shares the inference HTTP client")
+	}
+	transport, ok := adapter.oauth.http.Transport.(*http.Transport)
+	if !ok {
+		t.Fatalf("oauth transport type = %T, want *http.Transport", adapter.oauth.http.Transport)
+	}
+	if transport.Proxy != nil {
+		t.Fatal("oauth transport honors a proxy function; token refresh must use the host IP")
+	}
+
+	adapter.SetEgress(infraegress.NewManager(emptyEgressRepository{}, nil))
+	if _, ok := adapter.http.Transport.(*egressTransport); !ok {
+		t.Fatalf("inference transport type = %T, want *egressTransport", adapter.http.Transport)
+	}
+	if _, ok := adapter.oauth.http.Transport.(*egressTransport); ok {
+		t.Fatal("SetEgress attached inference egress to the oauth client")
+	}
+	if adapter.oauth.http == adapter.http {
+		t.Fatal("SetEgress aliased oauth onto the inference client")
+	}
+}
+
+func TestRefreshCredentialBypassesInferenceEgress(t *testing.T) {
+	cipher, err := security.NewCipher(base64.StdEncoding.EncodeToString(make([]byte, 32)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	encryptedRefresh, err := cipher.Encrypt("original-rt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	oauthHits := 0
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		oauthHits++
+		if err := request.ParseForm(); err != nil {
+			t.Errorf("parse form: %v", err)
+			writer.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if request.Form.Get("grant_type") != "refresh_token" || request.Form.Get("refresh_token") != "original-rt" {
+			t.Errorf("form = %#v", request.Form)
+			writer.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		writer.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(writer, `{"access_token":"fresh-access","refresh_token":"rotated-rt","expires_in":3600}`)
+	}))
+	t.Cleanup(server.Close)
+
+	egressHits := 0
+	adapter := NewAdapter(Config{}, cipher)
+	adapter.SetEgress(infraegress.NewManager(emptyEgressRepository{}, nil))
+	adapter.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
+		egressHits++
+		return nil, errors.New("inference egress must not handle OAuth refresh")
+	})
+	adapter.oauth.http = server.Client()
+	adapter.oauth.tokenURL = server.URL
+
+	refreshed, err := adapter.RefreshCredential(context.Background(), accountdomain.Credential{
+		OIDCClientID: defaultOAuthClientID, EncryptedRefreshToken: encryptedRefresh,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	access, err := cipher.Decrypt(refreshed.EncryptedAccessToken)
+	if err != nil {
+		t.Fatal(err)
+	}
+	refresh, err := cipher.Decrypt(refreshed.EncryptedRefreshToken)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if oauthHits != 1 || egressHits != 0 || access != "fresh-access" || refresh != "rotated-rt" {
+		t.Fatalf("oauthHits=%d egressHits=%d access=%q refresh=%q", oauthHits, egressHits, access, refresh)
+	}
+}
 
 func TestPrepareImportedCredentialRefreshesRTOnlySeed(t *testing.T) {
 	cipher, err := security.NewCipher(base64.StdEncoding.EncodeToString(make([]byte, 32)))
