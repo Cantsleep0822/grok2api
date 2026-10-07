@@ -34,3 +34,17 @@ func TestParseOptionsSupportsContainerListenOverride(t *testing.T) {
 		t.Fatal("missing --listen value was accepted")
 	}
 }
+
+func TestParseOptionsLastListenFlagWins(t *testing.T) {
+	options, err := parseOptions([]string{
+		"--config", "/app/config.yaml",
+		"--listen", "0.0.0.0:8000",
+		"--listen", "0.0.0.0:10000",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if options.listen != "0.0.0.0:10000" {
+		t.Fatalf("listen = %q", options.listen)
+	}
+}

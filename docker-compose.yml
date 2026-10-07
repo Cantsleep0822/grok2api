@@ -8,9 +8,13 @@ services:
       - "${GROK2API_PORT:-8000}:8000"
     environment:
       TZ: "${TZ:-Asia/Shanghai}"
+      PORT: "${PORT:-8000}"
       # 非空时覆盖 config.yaml 的 PostgreSQL DSN，并自动启用 postgres。
       GROK2API_DATABASE_URL: "${GROK2API_DATABASE_URL:-}"
       GROK2API_QUALITY_GUARD_DIR: /var/lib/grok2api-quality-guard
+      # 非空时在同一容器内启动 cloudflared，把域名流量直连到本进程，不经过平台 HTTP 入口。
+      TUNNEL_TOKEN: "${TUNNEL_TOKEN:-}"
+      TUNNEL_TRANSPORT_PROTOCOL: "${TUNNEL_TRANSPORT_PROTOCOL:-}"
     volumes:
       - "${GROK2API_CONFIG:-./config.yaml}:/run/grok2api/config.yaml:ro"
       - grok2api-data:/app/data

@@ -11,6 +11,8 @@ server:
   # [按需修改] 仅列出会覆盖 X-Forwarded-For / X-Real-IP 的可信反向代理。
   # 留空时忽略所有转发头并记录直连对端 IP；不要使用 0.0.0.0/0 或 ::/0。
   # Docker/Nginx 示例：["127.0.0.1", "172.16.0.0/12"]
+  # Cloudflare Tunnel 与 grok2api 跑在同一容器时，对端是 loopback，需要：
+  # ["127.0.0.1", "::1"]
   trustedProxies: []
   # [通常不要修改] 仅限制客户端上传完整请求体的时间，不限制推理或流式响应。
   readTimeout: 15m
@@ -24,6 +26,7 @@ auth:
   accessTokenTTL: 15m
   refreshTokenTTL: 720h
   # [按需修改] 外部地址使用 HTTPS 时必须设为 true。
+  # Cloudflare Tunnel / 自定义 HTTPS 域名部署时设为 true。
   secureCookies: false
 
 secrets:
@@ -42,6 +45,8 @@ bootstrapAdmin:
 frontend:
   # [通常不要修改] Go 服务同源托管的前端构建目录。
   staticPath: "./frontend/dist"
+  # [按需修改] 浏览器和管理端展示用的公网根地址。Tunnel 部署填 https://你的域名
+  # publicApiBaseURL: "https://api.example.com"
 
 database:
   # [按需修改] 单实例使用 sqlite；多实例改为 postgres。

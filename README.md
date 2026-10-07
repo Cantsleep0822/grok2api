@@ -201,6 +201,8 @@ docker compose logs -f grok2api
 
 Open `http://127.0.0.1:8000`. The image already includes the frontend; SQLite data and local media are stored in the Compose volume.
 
+If you deploy on Render with a Cloudflare-hosted domain, do not CNAME the hostname to `*.onrender.com`. Render's ingress WAF can keyword-block grok2api request bodies, and the Free plan cannot turn that WAF off. Run Cloudflare Tunnel in the same container so the hostname reaches `127.0.0.1:8000` directly. Step-by-step guide (Chinese): [Render-Cloudflare-Tunnel教程.md](./Render-Cloudflare-Tunnel教程.md).
+
 ### Run from source
 
 ```bash
@@ -506,6 +508,8 @@ For example, an isolated network reported as `172.20.0.0/16` can be configured a
 
 If Cloudflare is in front of Nginx, configure Nginx's real-IP module with `CF-Connecting-IP` and Cloudflare's official proxy ranges first. Do not trust `CF-Connecting-IP` from arbitrary peers. Restart grok2api after changing `server.trustedProxies`; reload Nginx after changing its configuration.
 
+When Cloudflare Tunnel and grok2api share one container, the peer is loopback. Set `trustedProxies` to `["127.0.0.1", "::1"]`. See [Render-Cloudflare-Tunnel教程.md](./Render-Cloudflare-Tunnel教程.md).
+
 Important optional settings:
 
 - `audit.ledgerMode`: `observe` reports ledger faults; `enforce` can pause new inference to protect billing integrity.
@@ -558,3 +562,4 @@ make swagger
 - [简体中文 README](./README.zh-CN.md)
 - [Backend guide](./backend/README.md)
 - [Frontend guide](./frontend/README.md)
+- [Render + Cloudflare Tunnel guide (Chinese)](./Render-Cloudflare-Tunnel教程.md)

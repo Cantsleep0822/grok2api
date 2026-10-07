@@ -189,6 +189,8 @@ docker compose logs -f grok2api
 
 访问 `http://127.0.0.1:8000`。镜像已包含前端，SQLite 数据库与本地媒体保存在 Compose 数据卷中。
 
+部署在 Render、且域名挂在 Cloudflare 时：不要把域名 CNAME 到 `*.onrender.com`。Render 入口 WAF 会按关键词拦截 grok2api 请求，免费套餐无法关闭。正确做法是在同一容器内启动 Cloudflare Tunnel，让域名直连 `127.0.0.1:8000`。逐步说明见 [Render-Cloudflare-Tunnel教程.md](./Render-Cloudflare-Tunnel教程.md)。
+
 ### 源码运行
 
 ```bash
@@ -465,6 +467,8 @@ docker network inspect grok2api_default \
 
 如果 Nginx 前还有 Cloudflare，应先使用 Cloudflare 官方代理网段和 `CF-Connecting-IP` 正确配置 Nginx real-IP 模块，不要信任任意来源提供的 `CF-Connecting-IP`。修改 `server.trustedProxies` 后需要重启 grok2api；修改 Nginx 配置后需要重新加载 Nginx。
 
+Cloudflare Tunnel 与 grok2api 跑在同一容器时，对端是 loopback，将 `trustedProxies` 设为 `["127.0.0.1", "::1"]`。完整步骤见 [Render-Cloudflare-Tunnel教程.md](./Render-Cloudflare-Tunnel教程.md)。
+
 重要的可选设置：
 
 - `audit.ledgerMode`：`observe` 仅报告账本故障；`enforce` 可暂停新推理以保护计费准确性。
@@ -511,3 +515,4 @@ make swagger
 - [English README](./README.md)
 - [后端说明](./backend/README.md)
 - [前端说明](./frontend/README.md)
+- [Render + Cloudflare Tunnel 部署教程](./Render-Cloudflare-Tunnel教程.md)

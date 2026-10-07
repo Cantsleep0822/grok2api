@@ -46,10 +46,14 @@ RUN --mount=type=cache,id=grok2api-go-mod,target=/go/pkg/mod,sharing=locked \
 
 FROM alpine:${ALPINE_VERSION}
 
-ENV TZ=Asia/Shanghai \
-    GROK2API_CONFIG_SOURCE=/run/grok2api/config.yaml
+ARG TARGETARCH=amd64
+ARG CLOUDFLARED_VERSION=2026.10.0
 
-RUN apk add --no-cache ca-certificates su-exec tzdata && \
+ENV TZ=Asia/Shanghai \
+    GROK2API_CONFIG_SOURCE=/run/grok2api/config.yaml \
+    PORT=8000
+
+RUN apk add --no-cache ca-certificates su-exec tzdata tini wget && \
     addgroup -S -g 10001 grok2api && \
     adduser -S -D -H -u 10001 -G grok2api grok2api && \
     mkdir -p /app/data /run/grok2api /var/lib/grok2api-quality-guard && \
@@ -58,6 +62,20 @@ RUN apk add --no-cache ca-certificates su-exec tzdata && \
       /run/grok2api \
       /var/lib/grok2api-quality-guard && \
     chmod 0700 /var/lib/grok2api-quality-guard
+
+# cloudflared is optional at runtime: it starts only when TUNNEL_TOKEN is set.
+RUN set -eux; \
+    arch="${TARGETARCH}"; \
+    case "${arch}" in \
+      amd64|x86_64) arch=amd64; sha256=d33ff2d14475178d2012c2c56beba87389ac5ded27649519f198a7d3134a99db ;; \
+      arm64|aarch64) arch=arm64; sha256=e6422b9d4f72d3194bc5a38676f13667c06666523217b842a877d72a80b5ac08 ;; \
+      *) echo "unsupported TARGETARCH=${TARGETARCH}" >&2; exit 1 ;; \
+    esac; \
+    wget -qO /tmp/cloudflared \
+      "https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}/cloudflared-linux-${arch}"; \
+    echo "${sha256}  /tmp/cloudflared" | sha256sum -c -; \
+    mv /tmp/cloudflared /usr/local/bin/cloudflared; \
+    chmod 0755 /usr/local/bin/cloudflared
 
 WORKDIR /app
 
@@ -69,7 +87,7 @@ COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/grok2api-entrypoint
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD wget -qO- http://127.0.0.1:8000/healthz >/dev/null || exit 1
+    CMD ["/bin/sh", "-c", "wget -qO- http://127.0.0.1:${PORT:-8000}/healthz >/dev/null"]
 
-ENTRYPOINT ["/usr/local/bin/grok2api-entrypoint"]
-CMD ["/app/grok2api", "--config", "/app/config.yaml", "--listen", "0.0.0.0:8000"]
+ENTRYPOINT ["/sbin/tini", "-g", "--", "/usr/local/bin/grok2api-entrypoint"]
+CMD ["/app/grok2api", "--config", "/app/config.yaml"]

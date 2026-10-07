@@ -453,7 +453,7 @@ func TestValidateRejectsInvalidAutoAssignShareConfig(t *testing.T) {
 }
 
 func TestValidateTrustedProxies(t *testing.T) {
-	for _, values := range [][]string{nil, {"127.0.0.1", "10.0.0.0/8", "2001:db8::/32"}} {
+	for _, values := range [][]string{nil, {"127.0.0.1", "::1"}, {"127.0.0.1", "10.0.0.0/8", "2001:db8::/32"}} {
 		cfg := defaultConfig()
 		cfg.Secrets.JWTSecret = "12345678901234567890123456789012"
 		cfg.Secrets.CredentialEncryptionKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
